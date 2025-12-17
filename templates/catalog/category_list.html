@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Управление категориями</h4>
+            <a href="{% url 'catalog:category_create' %}" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Создать категорию
+            </a>
+        </div>
+        
+        <div class="card-body">
+            {% if categories %}
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th>URL</th>
+                            <th>Родительская</th>
+                            <th>Порядок</th>
+                            <th>Кол-во товаров</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                        <tr>
+                            <td>{{ category.id }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    {% if category.image %}
+                                    <img src="{{ category.image.url }}" alt="{{ category.name }}" 
+                                         class="img-thumbnail me-2" style="width: 40px; height: 40px;">
+                                    {% endif %}
+                                    <strong>{{ category.name }}</strong>
+                                </div>
+                            </td>
+                            <td><code>/{{ category.slug }}/</code></td>
+                            <td>
+                                {% if category.parent %}
+                                <span class="badge bg-info">{{ category.parent.name }}</span>
+                                {% else %}
+                                <span class="text-muted">Нет</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ category.order }}</td>
+                            <td>
+                                <span class="badge bg-primary">{{ category.products.count }}</span>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{% url 'catalog:product_list_by_category' category.slug %}" 
+                                       class="btn btn-outline-primary" title="Просмотреть товары">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{% url 'catalog:category_update' category.slug %}" 
+                                       class="btn btn-outline-warning" title="Редактировать">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'catalog:category_delete' category.slug %}" 
+                                       class="btn btn-outline-danger" title="Удалить">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        {% comment %} Выводим дочерние категории с отступом {% endcomment %}
+                        {% for child in category.children.all %}
+                        <tr style="background-color: #f8f9fa;">
+                            <td>{{ child.id }}</td>
+                            <td>
+                                <div class="d-flex align-items-center" style="padding-left: 30px;">
+                                    <i class="bi bi-arrow-return-right me-2"></i>
+                                    {% if child.image %}
+                                    <img src="{{ child.image.url }}" alt="{{ child.name }}" 
+                                         class="img-thumbnail me-2" style="width: 35px; height: 35px;">
+                                    {% endif %}
+                                    {{ child.name }}
+                                </div>
+                            </td>
+                            <td><code>/{{ child.slug }}/</code></td>
+                            <td>
+                                <span class="badge bg-secondary">{{ category.name }}</span>
+                            </td>
+                            <td>{{ child.order }}</td>
+                            <td>
+                                <span class="badge bg-secondary">{{ child.products.count }}</span>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{% url 'catalog:product_list_by_category' child.slug %}" 
+                                       class="btn btn-outline-primary btn-sm" title="Просмотреть товары">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{% url 'catalog:category_update' child.slug %}" 
+                                       class="btn btn-outline-warning btn-sm" title="Редактировать">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'catalog:category_delete' child.slug %}" 
+                                       class="btn btn-outline-danger btn-sm" title="Удалить">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Всего категорий</h5>
+                            <h2>{{ categories.count }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Родительские</h5>
+                            <h2>{{ parent_count }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Дочерние</h5>
+                            <h2>{{ child_count }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-dark">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">С изображениями</h5>
+                            <h2>{{ with_images_count }}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% else %}
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="bi bi-folder-x" style="font-size: 4rem; color: #6c757d;"></i>
+                </div>
+                <h4 class="text-muted mb-3">Категории не найдены</h4>
+                <p class="text-muted mb-4">Создайте первую категорию для организации товаров</p>
+                <a href="{% url 'catalog:category_create' %}" class="btn btn-lg btn-primary">
+                    <i class="bi bi-plus-circle"></i> Создать первую категорию
+                </a>
+            </div>
+            {% endif %}
+            
+            <div class="mt-4">
+                <a href="{% url 'users:dashboard' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Назад к дашборду
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

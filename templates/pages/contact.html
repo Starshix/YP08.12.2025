@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Контакты - GearLock{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Свяжитесь с нами</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    
+                    <div class="d-grid mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Отправить сообщение
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">Контактная информация</h4>
+            </div>
+            <div class="card-body">
+                <h5>Адрес</h5>
+                <p>
+                    <i class="fas fa-map-marker-alt me-2"></i>
+                    г. Москва, ул. Примерная, д. 1
+                </p>
+                
+                <h5 class="mt-4">Телефоны</h5>
+                <p>
+                    <i class="fas fa-phone me-2"></i>
+                    +7 (999) 123-45-67<br>
+                    <i class="fas fa-phone me-2"></i>
+                    +7 (800) 123-45-67 (бесплатно по России)
+                </p>
+                
+                <h5 class="mt-4">Email</h5>
+                <p>
+                    <i class="fas fa-envelope me-2"></i>
+                    info@gearlock.ru<br>
+                    <i class="fas fa-envelope me-2"></i>
+                    support@gearlock.ru
+                </p>
+                
+                <h5 class="mt-4">Режим работы</h5>
+                <p>
+                    <i class="fas fa-clock me-2"></i>
+                    Пн-Пт: 9:00 - 20:00<br>
+                    <i class="fas fa-clock me-2"></i>
+                    Сб-Вс: 10:00 - 18:00
+                </p>
+                
+                <h5 class="mt-4">Мы в соцсетях</h5>
+                <div class="mt-2">
+                    <a href="#" class="btn btn-outline-primary me-2">
+                        <i class="fab fa-vk"></i> ВКонтакте
+                    </a>
+                    <a href="#" class="btn btn-outline-info me-2">
+                        <i class="fab fa-telegram"></i> Telegram
+                    </a>
+                    <a href="#" class="btn btn-outline-danger">
+                        <i class="fab fa-instagram"></i> Instagram
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

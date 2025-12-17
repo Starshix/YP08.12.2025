@@ -1,0 +1,126 @@
+<!-- templates/catalog/category_form.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="mb-0">{{ title }}</h4>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" id="categoryForm">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    <strong>Ошибка!</strong> Пожалуйста, исправьте ошибки ниже.
+                </div>
+                {% endif %}
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="id_name" class="form-label">Название категории *</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.name.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="id_slug" class="form-label">URL (ЧПУ)</label>
+                        {{ form.slug }}
+                        <small class="form-text text-muted">{{ form.slug.help_text }}</small>
+                        {% if form.slug.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.slug.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="id_parent" class="form-label">Родительская категория</label>
+                        {{ form.parent }}
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="id_order" class="form-label">Порядок сортировки</label>
+                        {{ form.order }}
+                    </div>
+                    
+                    <div class="col-12 mb-3">
+                        <label for="id_image" class="form-label">Изображение категории</label>
+                        {{ form.image }}
+                    </div>
+                    
+                    <div class="col-12 mb-3">
+                        <label for="id_description" class="form-label">Описание</label>
+                        {{ form.description }}
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{% url 'catalog:category_list' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Назад к списку
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Сохранить категорию
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript для автоматического заполнения slug -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const nameField = document.getElementById('id_name');
+    const slugField = document.getElementById('id_slug');
+    
+    // Функция для преобразования в slug
+    function convertToSlug(text) {
+        return text
+            .toLowerCase()
+            .replace(/[^\w\u0400-\u04FF]+/g, '-')  // Поддержка кириллицы
+            .replace(/^-+/, '')
+            .replace(/-+$/, '');
+    }
+    
+    // Автоматическое заполнение slug при вводе названия
+    nameField.addEventListener('input', function() {
+        if (!slugField.value || slugField.dataset.manual === 'true') {
+            // Если slug пустой или пользователь вручную его менял, не трогаем
+            return;
+        }
+        
+        // Проверяем, совпадает ли текущий slug с автоматически сгенерированным
+        const autoSlug = convertToSlug(nameField.value);
+        if (slugField.value === autoSlug) {
+            // Обновляем только если совпадает (значит был сгенерирован автоматически)
+            slugField.value = convertToSlug(nameField.value);
+        }
+    });
+    
+    // При фокусе на поле slug отмечаем, что пользователь начал редактировать вручную
+    slugField.addEventListener('focus', function() {
+        slugField.dataset.manual = 'true';
+    });
+    
+    // При потере фокуса, если поле пустое, генерируем slug
+    slugField.addEventListener('blur', function() {
+        if (!slugField.value.trim()) {
+            slugField.value = convertToSlug(nameField.value);
+            slugField.dataset.manual = 'false';
+        }
+    });
+    
+    // Автозаполнение при загрузке, если slug пустой
+    if (!slugField.value.trim() && nameField.value.trim()) {
+        slugField.value = convertToSlug(nameField.value);
+    }
+});
+</script>
+{% endblock %}

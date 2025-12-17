@@ -1,0 +1,443 @@
+<!-- templates/users/content_dashboard.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Панель контент-менеджера{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <!-- Заголовок и статистика -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-edit me-2"></i>Панель контент-менеджера
+                        </h4>
+                        <div>
+                            <span class="badge bg-light text-dark">Последнее обновление: {% now "H:i" %}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Добро пожаловать, {{ user.first_name }}!</p>
+                    <p class="mb-0">Вы вошли как контент-менеджер. Управляйте товарами, категориями и контентом сайта.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Статистика в карточках -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Всего товаров</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.total_products }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-box fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{% url 'catalog:product_list' %}" class="small">Просмотреть все</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Категорий</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.total_categories }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-tags fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{% url 'catalog:category_list' %}" class="small">Просмотреть все</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Товаров в наличии</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.in_stock }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{% url 'catalog:product_list' %}?stock=in_stock" class="small">В наличии</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Нет в наличии</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.out_of_stock }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{% url 'catalog:product_list' %}?stock=out_of_stock" class="small">Требует внимания</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Основной контент: таблица товаров и быстрые действия -->
+    <div class="row">
+        <!-- Таблица последних товаров -->
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-primary">Последние добавленные товары</h6>
+                        <a href="{% url 'catalog:product_create' %}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-plus me-1"></i>Добавить товар
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Фото</th>
+                                    <th>Название</th>
+                                    <th>Категория</th>
+                                    <th>Цена</th>
+                                    <th>Наличие</th>
+                                    <th>Статус</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in recent_products %}
+                                <tr>
+                                    <td>
+                                        {% if product.image %}
+                                            <img src="{{ product.image.url }}" alt="{{ product.name }}" 
+                                                 class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
+                                        {% else %}
+                                            <div class="bg-light d-flex align-items-center justify-content-center" 
+                                                 style="width: 50px; height: 50px;">
+                                                <i class="fas fa-box text-muted"></i>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <strong>{{ product.name|truncatechars:30 }}</strong>
+                                        <br>
+                                        <small class="text-muted">Арт: {{ product.sku|default:"—" }}</small>
+                                    </td>
+                                    <td>
+                                        {% if product.category %}
+                                            <span class="badge bg-secondary">{{ product.category.name }}</span>
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <strong>{{ product.price }} ₽</strong>
+                                        {% if product.old_price %}
+                                            <br>
+                                            <small class="text-danger"><s>{{ product.old_price }} ₽</s></small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if product.stock > 0 %}
+                                            <span class="badge bg-success">{{ product.stock }} шт.</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Нет в наличии</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if product.is_active %}
+                                            <span class="badge bg-success">Активен</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Скрыт</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{% url 'catalog:product_detail' slug=product.slug %}" 
+                                               class="btn btn-outline-primary" title="Просмотр">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{% url 'catalog:product_update' slug=product.slug %}" 
+                                               class="btn btn-outline-success" title="Редактировать">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form method="post" action="{% url 'catalog:product_delete' slug=product.slug %}" 
+                                                style="display: inline;" onsubmit="return confirm('Удалить товар {{ product.name }}?')">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-outline-danger" title="Удалить">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-4">
+                                        <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted">Товаров пока нет</p>
+                                        <a href="{% url 'catalog:product_create' %}" class="btn btn-primary">
+                                            <i class="fas fa-plus me-1"></i>Добавить первый товар
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <span class="small text-muted">Показано {{ recent_products|length }} из {{ stats.total_products }} товаров</span>
+                        </div>
+                        <div>
+                            <a href="{% url 'catalog:product_list' %}" class="btn btn-sm btn-outline-primary">
+                                Все товары <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Боковая панель с быстрыми действиями -->
+        <div class="col-lg-4 mb-4">
+            <!-- Быстрые действия -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Быстрые действия</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'catalog:product_create' %}" class="btn btn-primary btn-block mb-2">
+                            <i class="fas fa-plus me-2"></i>Добавить товар
+                        </a>
+                        <a href="{% url 'catalog:category_create' %}" class="btn btn-success btn-block mb-2">
+                            <i class="fas fa-tags me-2"></i>Создать категорию
+                        </a>
+                        <a href="{% url 'catalog:product_list' %}" class="btn btn-info btn-block mb-2">
+                            <i class="fas fa-list me-2"></i>Все товары
+                        </a>
+                        <a href="{% url 'catalog:category_list' %}" class="btn btn-secondary btn-block mb-2">
+                            <i class="fas fa-folder me-2"></i>Все категории
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Категории -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-primary">Категории товаров</h6>
+                        <span class="badge bg-primary rounded-pill">{{ stats.total_categories }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for category in categories %}
+                            {% if not category.parent %}
+                                <a class="dropdown-item" href="{% url 'catalog:product_list_by_category' category.slug %}">
+                                    {{ category.name }}
+                                </a>
+                                {% for child in category.children.all %}
+                                    <a class="dropdown-item ps-4" href="{% url 'catalog:product_list_by_category' child.slug %}">
+                                        {{ child.name }}
+                                    </a>
+                                {% endfor %}
+                            {% endif %}
+                        {% empty %}
+                        <div class="text-center py-3">
+                            <i class="fas fa-tags fa-2x text-muted mb-2"></i>
+                            <p class="text-muted mb-0">Категорий пока нет</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'catalog:category_list' %}" class="btn btn-sm btn-outline-primary btn-block">
+                        Управление категориями
+                    </a>
+                </div>
+            </div>
+
+            <!-- Статус системы -->
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Статус системы</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Заполненность каталога</span>
+                            <span class="text-primary">{{ stats.catalog_fill_percentage }}%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-primary" role="progressbar" 
+                                 style="width: {{ stats.catalog_fill_percentage }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Товары с фото</span>
+                            <span class="text-success">{{ stats.products_with_images }} из {{ stats.total_products }}</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" role="progressbar" 
+                                 style="width: {{ stats.products_with_images_percentage }}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="small text-muted">
+                        <p class="mb-1"><i class="fas fa-info-circle me-1"></i> Обновлено: {% now "d.m.Y H:i" %}</p>
+                        <p class="mb-0"><i class="fas fa-user me-1"></i> Контент-менеджер: {{ user.get_full_name }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Нижняя панель с дополнительной информацией -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Руководство контент-менеджера</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <div class="text-center">
+                                <div class="bg-primary bg-opacity-10 p-3 rounded-circle d-inline-block mb-2">
+                                    <i class="fas fa-image fa-2x text-primary"></i>
+                                </div>
+                                <h6>Изображения</h6>
+                                <p class="small text-muted">Оптимальный размер: 800×800px. Формат: JPG, PNG</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="text-center">
+                                <div class="bg-success bg-opacity-10 p-3 rounded-circle d-inline-block mb-2">
+                                    <i class="fas fa-search fa-2x text-success"></i>
+                                </div>
+                                <h6>SEO</h6>
+                                <p class="small text-muted">Заполняйте заголовки, описания и ключевые слова</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="text-center">
+                                <div class="bg-info bg-opacity-10 p-3 rounded-circle d-inline-block mb-2">
+                                    <i class="fas fa-boxes fa-2x text-info"></i>
+                                </div>
+                                <h6>Категории</h6>
+                                <p class="small text-muted">Создавайте иерархию категорий для удобной навигации</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="text-center">
+                                <div class="bg-warning bg-opacity-10 p-3 rounded-circle d-inline-block mb-2">
+                                    <i class="fas fa-chart-line fa-2x text-warning"></i>
+                                </div>
+                                <h6>Аналитика</h6>
+                                <p class="small text-muted">Следите за наличием товаров и обновляйте цены</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <a href="{% url 'users:dashboard' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>На главный дашборд
+                            </a>
+                        </div>
+                        <div>
+                            <button onclick="window.print()" class="btn btn-outline-primary me-2">
+                                <i class="fas fa-print me-1"></i>Печать отчета
+                            </button>
+                            <a href="#" class="btn btn-outline-success" id="exportReport">
+                                <i class="fas fa-file-excel me-1"></i>Экспорт
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Экспорт отчета в CSV
+document.getElementById('exportReport').addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    const data = [
+        ['Отчет контент-менеджера', '{{ user.get_full_name }}', '{% now "d.m.Y H:i" %}'],
+        [],
+        ['Метрика', 'Значение'],
+        ['Всего товаров', '{{ stats.total_products }}'],
+        ['Категорий', '{{ stats.total_categories }}'],
+        ['Товаров в наличии', '{{ stats.in_stock }}'],
+        ['Нет в наличии', '{{ stats.out_of_stock }}'],
+        ['Заполненность каталога', '{{ stats.catalog_fill_percentage }}%'],
+        ['Товары с фото', '{{ stats.products_with_images }}'],
+    ];
+    
+    let csvContent = "data:text/csv;charset=utf-8,";
+    data.forEach(row => {
+        csvContent += row.map(cell => `"${cell}"`).join(",") + "\r\n";
+    });
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "content_manager_report_{% now 'Y-m-d' %}.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
+
+// Автоматическое обновление каждые 5 минут
+setTimeout(function() {
+    window.location.reload();
+}, 300000); // 5 минут
+</script>
+{% endblock %}

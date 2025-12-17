@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Оформление заказа - GearLock{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Оформление заказа</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <h5 class="mb-3">Контактная информация</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form.first_name|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.last_name|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form.email|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.phone|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    <h5 class="mb-3 mt-4">Адрес доставки</h5>
+                    <div class="mb-3">
+                        {{ form.address|as_crispy_field }}
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form.city|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.postal_code|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    <h5 class="mb-3 mt-4">Способ оплаты</h5>
+                    <div class="mb-3">
+                        {{ form.payment_method|as_crispy_field }}
+                    </div>
+                    
+                    <h5 class="mb-3 mt-4">Комментарий к заказу</h5>
+                    <div class="mb-4">
+                        {{ form.notes|as_crispy_field }}
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-check-circle"></i> Подтвердить заказ
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Ваш заказ</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Товар</th>
+                                <th class="text-end">Сумма</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart %}
+                            <tr>
+                                <td>{{ item.product.name }} × {{ item.quantity }}</td>
+                                <td class="text-end">{{ item.total_price }} ₽</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot class="table-secondary">
+                            <tr>
+                                <th>Итого:</th>
+                                <th class="text-end">{{ cart.get_total_price }} ₽</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                
+                <div class="alert alert-warning mt-3">
+                    <i class="fas fa-info-circle"></i>
+                    После оформления заказа с вами свяжется наш менеджер для подтверждения.
+                </div>
+                
+                <div class="alert alert-success">
+                    <i class="fas fa-shipping-fast"></i>
+                    Бесплатная доставка при заказе от 5000 ₽
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

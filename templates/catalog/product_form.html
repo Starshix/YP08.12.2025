@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">{{ title }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'catalog:product_list' %}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Назад к каталогу
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Сохранить товар
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            {% if product %}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Информация о товаре</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Артикул:</dt>
+                        <dd class="col-sm-9"><code>{{ product.sku }}</code></dd>
+                        
+                        <dt class="col-sm-3">Дата создания:</dt>
+                        <dd class="col-sm-9">{{ product.created_at|date:"d.m.Y H:i" }}</dd>
+                        
+                        <dt class="col-sm-3">Дата обновления:</dt>
+                        <dd class="col-sm-9">{{ product.updated_at|date:"d.m.Y H:i" }}</dd>
+                        
+                        {% if product.main_image %}
+                        <dt class="col-sm-3">Основное изображение:</dt>
+                        <dd class="col-sm-9">
+                            <img src="{{ product.main_image.url }}" alt="{{ product.name }}" 
+                                 class="img-thumbnail" style="max-width: 200px;">
+                        </dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

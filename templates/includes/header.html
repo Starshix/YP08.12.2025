@@ -1,0 +1,92 @@
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'catalog:home' %}">
+                <i class="fas fa-car"></i> GearLock
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'catalog:home' %}">Главная</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            Каталог
+                        </a>
+                        <div class="dropdown-menu">
+                            {% for category in categories %}
+                                {% if not category.parent %}
+                                    <a class="dropdown-item" href="{% url 'catalog:product_list_by_category' category.slug %}">
+                                        {{ category.name }}
+                                    </a>
+                                    {% for child in category.children.all %}
+                                        <a class="dropdown-item ps-4" href="{% url 'catalog:product_list_by_category' child.slug %}">
+                                            {{ child.name }}
+                                        </a>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'pages:about' %}">О компании</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'pages:contact' %}">Контакты</a>
+                    </li>
+                </ul>
+                
+                <!-- Поиск -->
+                <form class="d-flex me-3" action="{% url 'catalog:search' %}" method="get">
+                    <input class="form-control me-2" type="search" name="q" placeholder="Поиск товаров...">
+                    <button class="btn btn-outline-light" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+                
+                <!-- Корзина -->
+                <a href="{% url 'cart:cart_detail' %}" class="btn btn-outline-light me-2 position-relative">
+                    <i class="fas fa-shopping-cart"></i>
+                    Корзина
+                    {% with total_items=cart|length %}
+                        {% if total_items > 0 %}
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{ total_items }}
+                            </span>
+                        {% endif %}
+                    {% endwith %}
+                </a>
+                
+                <!-- Пользователь -->
+                <div class="nav-item dropdown">
+                    {% if user.is_authenticated %}
+                        <a class="nav-link dropdown-toggle text-light" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> {{ user.first_name|default:user.email }}
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <a class="dropdown-item" href="{% url 'users:profile' %}">
+                                <i class="fas fa-user-cog"></i> Личный кабинет
+                            </a>
+                            <a class="dropdown-item" href="{% url 'orders:order_list' %}">
+                                <i class="fas fa-history"></i> Мои заказы
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'users:logout' %}">
+                                <i class="fas fa-sign-out-alt"></i> Выйти
+                            </a>
+                        </div>
+                    {% else %}
+                        <a class="nav-link text-light" href="{% url 'users:login' %}">
+                            <i class="fas fa-sign-in-alt"></i> Войти
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>

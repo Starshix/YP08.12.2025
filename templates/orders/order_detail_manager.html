@@ -1,0 +1,176 @@
+<!-- templates/orders/order_detail_manager.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Заказ #{{ order.id }} - Детали{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-file-invoice me-2"></i>Заказ #{{ order.id }}
+                        </h4>
+                        <div>
+                            <span class="badge 
+                                {% if order.status == 'completed' %}bg-success
+                                {% elif order.status == 'processing' or order.status == 'new' %}bg-primary
+                                {% elif order.status == 'shipped' %}bg-warning
+                                {% elif order.status == 'cancelled' %}bg-danger
+                                {% else %}bg-secondary{% endif %}">
+                                {{ order.get_status_display }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Информация о заказе -->
+                        <div class="col-md-6">
+                            <h5>Информация о заказе</h5>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th width="40%">Номер заказа:</th>
+                                    <td>#{{ order.id }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Дата создания:</th>
+                                    <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Статус:</th>
+                                    <td>
+                                        <form method="post" action="{% url 'orders:change_order_status' order.id %}" 
+                                              class="d-inline">
+                                            {% csrf_token %}
+                                            <select name="status" class="form-select form-select-sm d-inline w-auto" 
+                                                    onchange="this.form.submit()">
+                                                {% for status_code, status_name in order.STATUS_CHOICES %}
+                                                    <option value="{{ status_code }}" 
+                                                            {% if order.status == status_code %}selected{% endif %}>
+                                                        {{ status_name }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Способ оплаты:</th>
+                                    <td>{{ order.get_payment_method_display }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Общая сумма:</th>
+                                    <td><strong>{{ order.total_price }} ₽</strong></td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <!-- Информация о клиенте -->
+                        <div class="col-md-6">
+                            <h5>Информация о клиенте</h5>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th width="40%">Имя:</th>
+                                    <td>{{ order.first_name }} {{ order.last_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Email:</th>
+                                    <td><a href="mailto:{{ order.email }}">{{ order.email }}</a></td>
+                                </tr>
+                                <tr>
+                                    <th>Телефон:</th>
+                                    <td><a href="tel:{{ order.phone }}">{{ order.phone }}</a></td>
+                                </tr>
+                                <tr>
+                                    <th>Адрес:</th>
+                                    <td>{{ order.address }}, {{ order.city }}, {{ order.postal_code }}</td>
+                                </tr>
+                                {% if order.user %}
+                                <tr>
+                                    <th>Аккаунт:</th>
+                                    <td>
+                                        <a href="#">{{ order.user.email }}</a>
+                                        (зарегистрирован)
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Товары в заказе -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h5>Товары в заказе</h5>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Товар</th>
+                                            <th>Цена</th>
+                                            <th>Количество</th>
+                                            <th>Сумма</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in order_items %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ item.product.name }}</strong><br>
+                                                <small class="text-muted">Артикул: {{ item.product.sku }}</small>
+                                            </td>
+                                            <td>{{ item.price }} ₽</td>
+                                            <td>{{ item.quantity }}</td>
+                                            <td>{{ item.total_price }} ₽</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="3" class="text-end"><strong>Итого:</strong></td>
+                                            <td><strong>{{ order.total_price }} ₽</strong></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Примечания -->
+                    {% if order.notes %}
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h5>Примечания</h5>
+                            <div class="card">
+                                <div class="card-body">
+                                    {{ order.notes|linebreaks }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'orders:all_orders' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Вернуться к списку
+                        </a>
+                        <div>
+                            <a href="{% url 'orders:order_update' order.id %}" class="btn btn-primary">
+                                <i class="fas fa-edit me-1"></i>Редактировать
+                            </a>
+                            <button onclick="window.print()" class="btn btn-info">
+                                <i class="fas fa-print me-1"></i>Печать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

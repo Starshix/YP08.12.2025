@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">Подтверждение удаления</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning" role="alert">
+                        <h5 class="alert-heading">
+                            <i class="bi bi-exclamation-triangle"></i> Внимание!
+                        </h5>
+                        <p>Вы собираетесь удалить категорию <strong>"{{ category.name }}"</strong>.</p>
+                        
+                        {% if category.children.exists %}
+                        <hr>
+                        <p class="mb-0">
+                            <i class="bi bi-info-circle"></i> 
+                            У этой категории есть подкатегории:
+                            <ul class="mt-2">
+                                {% for child in category.children.all %}
+                                <li>{{ child.name }}</li>
+                                {% endfor %}
+                            </ul>
+                        </p>
+                        {% endif %}
+                        
+                        {% if category.products.exists %}
+                        <hr>
+                        <p class="mb-0">
+                            <i class="bi bi-info-circle"></i> 
+                            В этой категории есть товары: 
+                            <span class="badge bg-danger">{{ category.products.count }}</span>
+                        </p>
+                        {% endif %}
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'catalog:category_list' %}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Отмена
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Удалить категорию
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
