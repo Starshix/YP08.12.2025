@@ -1,4 +1,4 @@
-<!-- templates/orders/all_orders.html -->
+
 {% extends 'base.html' %}
 {% load static %}
 
@@ -67,14 +67,14 @@
                                             </td>
                                             <td>
                                                 <div class="btn-group" role="group">
-                                                    <!-- Кнопка просмотра -->
+                                                    
                                                     <a href="{% url 'orders:order_detail_manager' order.id %}" 
                                                        class="btn btn-sm btn-outline-primary"
                                                        title="Просмотреть детали">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
                                                     
-                                                    <!-- Выпадающее меню для быстрых действий -->
+                                                    
                                                     <div class="btn-group" role="group">
                                                         <button type="button" 
                                                                 class="btn btn-sm btn-outline-info dropdown-toggle" 
@@ -140,7 +140,7 @@
                             </table>
                         </div>
                         
-                        <!-- Фильтры и поиск -->
+                        
                         <div class="card mb-3">
                             <div class="card-body">
                                 <form method="get" class="row g-3">
@@ -213,7 +213,7 @@
     </div>
 </div>
 
-<!-- JavaScript для улучшения UX -->
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Подтверждение действий

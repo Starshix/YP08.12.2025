@@ -78,7 +78,7 @@ $(document).ready(function() {
 
 {% block content %}
 <div class="container">
-    <!-- Хлебные крошки -->
+    
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
@@ -102,7 +102,7 @@ $(document).ready(function() {
     </nav>
 
     <div class="row">
-        <!-- Изображения -->
+        
         <div class="col-md-6">
             <div class="card mb-3">
                 <div class="card-body text-center">
@@ -131,13 +131,13 @@ $(document).ready(function() {
             {% endif %}
         </div>
 
-        <!-- Информация -->
+        
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
                     <h1 class="h3 mb-3">{{ product.name }}</h1>
                     
-                    <!-- Бейджи -->
+                    
                     <div class="mb-3">
                         {% if product.is_new %}
                             <span class="badge bg-success me-1">Новинка</span>
@@ -148,7 +148,7 @@ $(document).ready(function() {
                         <span class="badge bg-info">{{ product.get_availability_display }}</span>
                     </div>
                     
-                    <!-- Цена -->
+                    
                     <div class="mb-4">
                         {% if product.old_price %}
                             <div class="text-muted text-decoration-line-through fs-5">
@@ -165,7 +165,7 @@ $(document).ready(function() {
                         {% endif %}
                     </div>
                     
-                    <!-- Артикул и категория -->
+                    
                     <div class="mb-4">
                         <p><strong>Артикул:</strong> {{ product.sku }}</p>
                         <p><strong>Категория:</strong> 
@@ -182,13 +182,13 @@ $(document).ready(function() {
                         {% endif %}
                     </div>
                     
-                    <!-- Описание -->
+                    
                     <div class="mb-4">
                         <h5>Описание</h5>
                         <p>{{ product.description|linebreaks }}</p>
                     </div>
                     
-                    <!-- Характеристики -->
+                    
                     {% if product.features %}
                     <div class="mb-4">
                         <h5>Характеристики</h5>
@@ -200,7 +200,7 @@ $(document).ready(function() {
                     </div>
                     {% endif %}
                     
-                    <!-- Добавление в корзину -->
+                    
                     <div class="d-flex align-items-center mb-4">
                         {% if product.availability == 'in_stock' or product.availability == 'limited' %}
                             <form action="{% url 'cart:cart_add' product.id %}" method="post" class="d-flex align-items-center add-to-cart-form">
@@ -227,7 +227,7 @@ $(document).ready(function() {
                         {% endif %}
                     </div>
                     
-                    <!-- Инфо -->
+                    
                     <div class="alert alert-info">
                         <i class="fas fa-shipping-fast me-2"></i>
                         Бесплатная доставка при заказе от 5000 ₽
@@ -237,7 +237,7 @@ $(document).ready(function() {
         </div>
     </div>
 
-    <!-- Похожие товары -->
+    
     {% if related_products %}
     <div class="row mt-5">
         <div class="col-12">

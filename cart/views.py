@@ -12,18 +12,18 @@ def cart_add(request, product_id):
     cart = Cart(request)
     product = get_object_or_404(Product, id=product_id)
     
-    # Получаем количество из формы
+
     quantity = int(request.POST.get('quantity', 1))
     override = request.POST.get('override') == 'true'
     
-    # Добавляем товар в корзину
+
     cart.add(
         product=product, 
         quantity=quantity, 
         override_quantity=override
     )
     
-    # Проверяем AJAX запрос
+
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return JsonResponse({
             'success': True,
@@ -41,7 +41,7 @@ def cart_remove(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     cart.remove(product)
     
-    # Проверяем AJAX запрос
+
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return JsonResponse({
             'success': True,
@@ -66,7 +66,7 @@ def cart_clear(request):
     cart = Cart(request)
     cart.clear()
     
-    # Проверяем AJAX запрос
+
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return JsonResponse({
             'success': True,

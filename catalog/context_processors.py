@@ -1,14 +1,13 @@
-# catalog/context_processors.py
 from .models import Category
 
 def categories(request):
-    # Фильтруем категории с пустым slug и сортируем их
+
     main_categories = Category.objects.filter(
         parent__isnull=True
     ).exclude(
-        slug=''  # Исключаем пустые slug
+        slug=''
     ).exclude(
-        slug__isnull=True  # Исключаем null slug
+        slug__isnull=True 
     ).prefetch_related('children').order_by('order', 'name')
     
     return {

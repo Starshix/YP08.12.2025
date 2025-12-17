@@ -3,7 +3,7 @@
 {% block title %}GearLock - Главная{% endblock %}
 
 {% block content %}
-<!-- Слайдер -->
+
 <div id="carouselExampleIndicators" class="carousel slide mb-4" data-bs-ride="carousel">
     <div class="carousel-indicators">
         <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></button>
@@ -29,7 +29,7 @@
     </button>
 </div>
 
-<!-- Категории -->
+
 <h2 class="mb-4">Категории товаров</h2>
 <div class="row mb-5">
     {% for category in categories %}
@@ -47,7 +47,7 @@
     {% endfor %}
 </div>
 
-<!-- Популярные товары -->
+
 <h2 class="mb-4">Популярные товары</h2>
 <div class="row mb-5">
     {% for product in featured_products %}
@@ -78,7 +78,7 @@
     {% endfor %}
 </div>
 
-<!-- Новинки -->
+
 <h2 class="mb-4">Новинки</h2>
 <div class="row mb-5">
     {% for product in new_products %}
@@ -106,7 +106,7 @@
     {% endfor %}
 </div>
 
-<!-- Акции -->
+
 <h2 class="mb-4">Акции</h2>
 <div class="row">
     {% for product in sale_products %}

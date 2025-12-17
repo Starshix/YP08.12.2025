@@ -14,7 +14,7 @@
 
 {% block content %}
 <div class="container">
-    <!-- Хлебные крошки -->
+    
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
@@ -39,7 +39,7 @@
         </ol>
     </nav>
 
-    <!-- Заголовок -->
+    
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>
             {% if current_category %}
@@ -61,9 +61,9 @@
     </div>
 
     <div class="row">
-        <!-- Фильтры -->
+        
         <div class="col-md-3">
-            <!-- Категории -->
+            
             <div class="card mb-4">
                 <div class="card-header bg-secondary text-white">
                     <h5 class="mb-0">Категории</h5>
@@ -91,14 +91,14 @@
                 </div>
                 <div class="card-body">
                     <form method="get">
-                        <!-- Поиск -->
+                        
                         <div class="mb-3">
                             <label class="form-label">Поиск</label>
                             <input type="text" name="q" class="form-control" 
                                    value="{{ search_query }}" placeholder="Название товара...">
                         </div>
 
-                        <!-- Цена -->
+                        
                         <div class="mb-3">
                             <label class="form-label">Цена</label>
                             <div class="row g-2">
@@ -113,7 +113,7 @@
                             </div>
                         </div>
 
-                        <!-- Сортировка -->
+                        
                         <div class="mb-3">
                             <label class="form-label">Сортировка</label>
                             <select name="sort" class="form-select">
@@ -132,7 +132,7 @@
                             </select>
                         </div>
 
-                        <!-- Наличие -->
+                        
                         <div class="mb-3">
                             <label class="form-label">Наличие</label>
                             <select name="availability" class="form-select">
@@ -157,7 +157,7 @@
                 </div>
             </div>
 
-            <!-- Бренды -->
+            
             <div class="card">
                 <div class="card-header bg-secondary text-white">
                     <h5 class="mb-0">Бренды</h5>
@@ -180,14 +180,14 @@
             </div>
         </div>
 
-        <!-- Товары -->
+        
         <div class="col-md-9">
             {% if products %}
                 <div class="row">
                     {% for product in products %}
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="card h-100 product-card">
-                            <!-- Изображение товара -->
+                            
                             <div class="position-relative">
                                 {% if product.main_image %}
                                     <img src="{{ product.main_image.url }}" class="card-img-top" 
@@ -197,7 +197,7 @@
                                          alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
                                 {% endif %}
                                 
-                                <!-- Бейджи -->
+                                
                                 <div class="position-absolute top-0 start-0 m-2">
                                     {% if product.is_new %}
                                         <span class="badge bg-success">Новинка</span>
@@ -209,7 +209,7 @@
                             </div>
                             
                             <div class="card-body d-flex flex-column">
-                                <!-- Название и категория -->
+                                
                                 <h6 class="card-title">{{ product.name|truncatechars:50 }}</h6>
                                 <p class="card-text text-muted small mb-2">
                                     {{ product.category.name }}
@@ -218,7 +218,7 @@
                                     {% endif %}
                                 </p>
                                 
-                                <!-- Цена -->
+                                
                                 <div class="mt-auto">
                                     {% if product.old_price %}
                                         <div class="text-muted text-decoration-line-through mb-1">
@@ -229,7 +229,7 @@
                                         {{ product.price }} ₽
                                     </div>
                                     
-                                    <!-- Наличие -->
+                                    
                                     <div class="mt-2">
                                         {% if product.availability == 'in_stock' %}
                                             <span class="badge bg-success">В наличии</span>
@@ -242,7 +242,7 @@
                                         {% endif %}
                                     </div>
                                     
-                                    <!-- Кнопки -->
+                                    
                                     <div class="d-flex justify-content-between mt-3">
                                         <a href="{% url 'catalog:product_detail' product.slug %}" 
                                            class="btn btn-outline-primary btn-sm">
@@ -271,7 +271,7 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <!-- Нет товаров -->
+                
                 <div class="text-center py-5">
                     <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
                     <h3>Товары не найдены</h3>
