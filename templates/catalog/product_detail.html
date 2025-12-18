@@ -1,98 +1,33 @@
 {% extends 'base.html' %}
 
 {% block title %}{{ product.name }} - GearLock{% endblock %}
-
-{% block extra_head %}
-<script>
-$(document).ready(function() {
-    // Обработка формы добавления в корзину
-    $('.add-to-cart-form').submit(function(e) {
-        e.preventDefault(); // Отменяем стандартную отправку формы
-        
-        var form = $(this);
-        var url = form.attr('action');
-        var data = form.serialize();
-        
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: data,
-            dataType: 'json',
-            headers: {
-                'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
-            },
-            success: function(response) {
-                if (response.success) {
-                    // Показываем уведомление
-                    showNotification('Товар добавлен в корзину!', 'success');
-                    
-                    // Обновляем счетчик корзины, если он есть
-                    if (response.cart_count !== undefined) {
-                        updateCartCount(response.cart_count);
-                    }
-                } else {
-                    showNotification('Ошибка: ' + response.message, 'error');
-                }
-            },
-            error: function(xhr, status, error) {
-                showNotification('Ошибка при добавлении в корзину', 'error');
-            }
-        });
-    });
-    
-    // Функция показа уведомления
-    function showNotification(message, type) {
-        // Создаем элемент уведомления
-        var notification = $('<div class="alert alert-' + type + ' alert-dismissible fade show position-fixed top-0 end-0 m-3" style="z-index: 1050; min-width: 300px;">' +
-                            '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
-                            message +
-                            '</div>');
-        
-        // Добавляем на страницу
-        $('body').append(notification);
-        
-        // Автоматически скрываем через 3 секунды
-        setTimeout(function() {
-            notification.alert('close');
-        }, 3000);
-    }
-    
-    // Функция обновления счетчика корзины
-    function updateCartCount(count) {
-        var cartCountElement = $('.cart-count');
-        if (cartCountElement.length) {
-            cartCountElement.text(count);
-        }
-    }
-});
-</script>
-<style>
-.alert-fixed {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 9999;
-}
-</style>
-{% endblock %}
-
 {% block content %}
+<link rel="stylesheet" href="/static/css/product_detali.css">
 <div class="container">
     
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'catalog:product_list' %}">Каталог</a></li>
+    
+    <nav aria-label="breadcrumb" class="breadcrumb mb-4">
+        <ol>
+            <li class="breadcrumb-item">
+                <a href="{% url 'home' %}" class="breadcrumb-link">
+                    <i class="fas fa-home"></i> Главная
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'catalog:product_list' %}" class="breadcrumb-link">Каталог</a>
+            </li>
             {% if product.category %}
                 {% if product.category.parent %}
                     <li class="breadcrumb-item">
-                        <a href="{% url 'catalog:product_list_by_category' product.category.parent.slug %}">
+                        <a href="{% url 'catalog:product_list_by_category' product.category.parent.slug %}" 
+                           class="breadcrumb-link">
                             {{ product.category.parent.name }}
                         </a>
                     </li>
                 {% endif %}
                 <li class="breadcrumb-item">
-                    <a href="{% url 'catalog:product_list_by_category' product.category.slug %}">
+                    <a href="{% url 'catalog:product_list_by_category' product.category.slug %}" 
+                       class="breadcrumb-link">
                         {{ product.category.name }}
                     </a>
                 </li>
@@ -104,41 +39,41 @@ $(document).ready(function() {
     <div class="row">
         
         <div class="col-md-6">
-            <div class="card mb-3">
-                <div class="card-body text-center">
-                    {% if product.images.all %}
-                        <img id="mainImage" src="{{ product.images.first.image.url }}" 
-                             class="img-fluid" alt="{{ product.name }}" 
-                             style="max-height: 400px; object-fit: contain;">
-                    {% else %}
-                        <img id="mainImage" src="https://via.placeholder.com/500x400" 
-                             class="img-fluid" alt="{{ product.name }}">
-                    {% endif %}
+            <div class="product-gallery">
+                <div class="card img-gallery mb-3">
+                    <div class="card-body text-center">
+                        {% if product.images.all %}
+                            <img id="mainImage" src="{{ product.images.first.image.url }}" 
+                                 class="img-fluid" alt="{{ product.name }}">
+                        {% else %}
+                            <img id="mainImage" src="https://via.placeholder.com/500x400" 
+                                 class="img-fluid" alt="{{ product.name }}">
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
-            
-            {% if product.images.count > 1 %}
-            <div class="row g-2">
-                {% for image in product.images.all %}
-                <div class="col-3">
-                    <img src="{{ image.image.url }}" class="img-thumbnail thumbnail-image" 
-                         alt="{{ product.name }}" 
-                         style="cursor: pointer; height: 80px; object-fit: cover;"
-                         onclick="document.getElementById('mainImage').src = this.src">
+                
+                {% if product.images.count > 1 %}
+                <div class="row g-2">
+                    {% for image in product.images.all %}
+                    <div class="col-3">
+                        <img src="{{ image.image.url }}" class="img-thumbnail thumbnail-image" 
+                             alt="{{ product.name }}" 
+                             onclick="document.getElementById('mainImage').src = this.src">
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
+                {% endif %}
             </div>
-            {% endif %}
         </div>
 
         
         <div class="col-md-6">
-            <div class="card">
+            <div class="card product-info-card">
                 <div class="card-body">
                     <h1 class="h3 mb-3">{{ product.name }}</h1>
                     
                     
-                    <div class="mb-3">
+                    <div class="product-badges mb-3">
                         {% if product.is_new %}
                             <span class="badge bg-success me-1">Новинка</span>
                         {% endif %}
@@ -149,7 +84,7 @@ $(document).ready(function() {
                     </div>
                     
                     
-                    <div class="mb-4">
+                    <div class="price-section mb-4">
                         {% if product.old_price %}
                             <div class="text-muted text-decoration-line-through fs-5">
                                 {{ product.old_price }} ₽
@@ -166,7 +101,7 @@ $(document).ready(function() {
                     </div>
                     
                     
-                    <div class="mb-4">
+                    <div class="meta-info mb-4">
                         <p><strong>Артикул:</strong> {{ product.sku }}</p>
                         <p><strong>Категория:</strong> 
                             <a href="{% url 'catalog:product_list_by_category' product.category.slug %}">
@@ -183,32 +118,15 @@ $(document).ready(function() {
                     </div>
                     
                     
-                    <div class="mb-4">
-                        <h5>Описание</h5>
-                        <p>{{ product.description|linebreaks }}</p>
-                    </div>
-                    
-                    
-                    {% if product.features %}
-                    <div class="mb-4">
-                        <h5>Характеристики</h5>
-                        <div class="row">
-                            <div class="col-md-12">
-                                {{ product.features|linebreaks }}
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
-                    
-                    
-                    <div class="d-flex align-items-center mb-4">
+                    <div class="add-to-cart-section">
                         {% if product.availability == 'in_stock' or product.availability == 'limited' %}
-                            <form action="{% url 'cart:cart_add' product.id %}" method="post" class="d-flex align-items-center add-to-cart-form">
+                            <form action="{% url 'cart:cart_add' product.id %}" method="post" 
+                                  class="d-flex align-items-center add-to-cart-form">
                                 {% csrf_token %}
                                 <div class="me-3">
                                     <label for="quantity" class="form-label">Количество:</label>
                                     <input type="number" name="quantity" id="quantity" value="1" min="1" 
-                                           max="{{ product.quantity }}" class="form-control" style="width: 100px;">
+                                           max="{{ product.quantity }}" class="form-control">
                                 </div>
                                 <div>
                                     <button type="submit" class="btn btn-primary btn-lg">
@@ -230,39 +148,70 @@ $(document).ready(function() {
                     
                     <div class="alert alert-info">
                         <i class="fas fa-shipping-fast me-2"></i>
-                        Бесплатная доставка при заказе от 5000 ₽
+                        Бесплатная доставка при заказе от 3000 ₽
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     
-    {% if related_products %}
-    <div class="row mt-5">
+    
+    <div class="row mt-4">
         <div class="col-12">
-            <h3 class="mb-4">Похожие товары</h3>
-            <div class="row">
-                {% for product in related_products %}
-                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                    <div class="card h-100">
-                        {% if product.main_image %}
-                            <img src="{{ product.main_image.url }}" class="card-img-top" alt="{{ product.name }}" 
-                                 style="height: 150px; object-fit: cover;">
-                        {% else %}
-                            <img src="https://via.placeholder.com/300x150" class="card-img-top" alt="{{ product.name }}">
-                        {% endif %}
-                        <div class="card-body">
-                            <h6 class="card-title">{{ product.name|truncatechars:40 }}</h6>
-                            <p class="card-text">
-                                <strong>{{ product.price }} ₽</strong>
-                            </p>
-                            <a href="{% url 'catalog:product_detail' product.slug %}" class="btn btn-outline-primary btn-sm">Подробнее</a>
+            
+            {% if product.description %}
+            <div class="description-section">
+                <h5>Описание</h5>
+                <div class="card">
+                    <div class="card-body">
+                        {{ product.description|linebreaks }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            
+            {% if product.features %}
+            <div class="features-section">
+                <h5>Характеристики</h5>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                {{ product.features|linebreaks }}
+                            </div>
                         </div>
                     </div>
                 </div>
-                {% endfor %}
             </div>
+            {% endif %}
+        </div>
+    </div>
+
+    
+    {% if related_products %}
+    <div class="related-products mt-5">
+        <h3 class="mb-4">Похожие товары</h3>
+        <div class="row">
+            {% for product in related_products %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card related-product-card h-100">
+                    {% if product.main_image %}
+                        <img src="{{ product.main_image.url }}" class="card-img-top" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300x150" class="card-img-top" alt="{{ product.name }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h6 class="card-title">{{ product.name|truncatechars:40 }}</h6>
+                        <p class="card-text">
+                            <strong>{{ product.price }} ₽</strong>
+                        </p>
+                        <a href="{% url 'catalog:product_detail' product.slug %}" 
+                           class="btn btn-outline-primary btn-sm">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
     {% endif %}

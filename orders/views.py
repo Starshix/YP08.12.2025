@@ -26,7 +26,7 @@ def order_create(request):
             order.total_price = cart.get_total_price()
             order.save()
             
-            # Сохраняем товары в заказе
+
             for item in cart:
                 OrderItem.objects.create(
                     order=order,
@@ -35,13 +35,13 @@ def order_create(request):
                     quantity=item['quantity']
                 )
             
-            # Очищаем корзину
+
             cart.clear()
             
             messages.success(request, f'Заказ #{order.id} успешно оформлен!')
             return redirect('orders:order_detail', order_id=order.id)
     else:
-        # Заполняем форму данными пользователя, если он авторизован
+
         initial_data = {}
         if request.user.is_authenticated:
             initial_data = {
@@ -73,12 +73,12 @@ def all_orders(request):
     """Все заказы для менеджера с фильтрацией"""
     orders = Order.objects.all().order_by('-created_at')
     
-    # Фильтрация по статусу
+
     status_filter = request.GET.get('status')
     if status_filter:
         orders = orders.filter(status=status_filter)
     
-    # Фильтрация по дате
+
     date_from = request.GET.get('date_from')
     date_to = request.GET.get('date_to')
     

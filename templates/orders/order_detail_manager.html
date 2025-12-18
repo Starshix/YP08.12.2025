@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 {% load static %}
 
@@ -8,134 +7,233 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
+            <div class="card shadow-sm border-0 overflow-hidden">
+                <div class="card-header bg-white border-0 pt-4 pb-3">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h4 class="mb-0">
-                            <i class="fas fa-file-invoice me-2"></i>Заказ #{{ order.id }}
-                        </h4>
                         <div>
-                            <span class="badge 
-                                {% if order.status == 'completed' %}bg-success
-                                {% elif order.status == 'processing' or order.status == 'new' %}bg-primary
-                                {% elif order.status == 'shipped' %}bg-warning
-                                {% elif order.status == 'cancelled' %}bg-danger
-                                {% else %}bg-secondary{% endif %}">
+                            <h4 class="mb-0 fw-bold">
+                                <i class="fas fa-file-invoice me-2 text-about"></i>Заказ #{{ order.id }}
+                            </h4>
+                            <p class="text-muted mb-0 mt-1">Детальная информация о заказе</p>
+                        </div>
+                        <div>
+                            <span class="badge rounded-pill px-3 py-2 
+                                {% if order.status == 'completed' %}bg-success-subtle text-success border border-success
+                                {% elif order.status == 'processing' or order.status == 'new' %}bg-primary-subtle text-primary border border-primary
+                                {% elif order.status == 'shipped' %}bg-warning-subtle text-warning border border-warning
+                                {% elif order.status == 'cancelled' %}bg-danger-subtle text-danger border border-danger
+                                {% else %}bg-secondary-subtle text-secondary border border-secondary{% endif %}">
+                                <i class="fas fa-circle fa-xs me-1"></i>
                                 {{ order.get_status_display }}
                             </span>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row g-4">
                         
-                        <div class="col-md-6">
-                            <h5>Информация о заказе</h5>
-                            <table class="table table-sm">
-                                <tr>
-                                    <th width="40%">Номер заказа:</th>
-                                    <td>#{{ order.id }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Дата создания:</th>
-                                    <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Статус:</th>
-                                    <td>
-                                        <form method="post" action="{% url 'orders:change_order_status' order.id %}" 
-                                              class="d-inline">
-                                            {% csrf_token %}
-                                            <select name="status" class="form-select form-select-sm d-inline w-auto" 
-                                                    onchange="this.form.submit()">
-                                                {% for status_code, status_name in order.STATUS_CHOICES %}
-                                                    <option value="{{ status_code }}" 
-                                                            {% if order.status == status_code %}selected{% endif %}>
-                                                        {{ status_name }}
-                                                    </option>
-                                                {% endfor %}
-                                            </select>
-                                        </form>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Способ оплаты:</th>
-                                    <td>{{ order.get_payment_method_display }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Общая сумма:</th>
-                                    <td><strong>{{ order.total_price }} ₽</strong></td>
-                                </tr>
-                            </table>
+                        <div class="col-lg-6">
+                            <div class="card border-0 bg-light-subtle h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title fw-bold mb-3 pb-2 border-bottom">
+                                        <i class="fas fa-shopping-cart me-2 text-about"></i>Информация о заказе
+                                    </h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-borderless mb-0">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="border-0 ps-0" width="40%">
+                                                        <span class="text-muted small">Номер заказа:</span>
+                                                    </td>
+                                                    <td class="border-0 pe-0">
+                                                        <span class="fw-bold text-about">#{{ order.id }}</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-0 ps-0">
+                                                        <span class="text-muted small">Дата создания:</span>
+                                                    </td>
+                                                    <td class="border-0 pe-0">
+                                                        <span class="fw-medium">{{ order.created_at|date:"d.m.Y H:i" }}</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-0 ps-0">
+                                                        <span class="text-muted small">Статус:</span>
+                                                    </td>
+                                                    <td class="border-0 pe-0">
+                                                        <form method="post" action="{% url 'orders:change_order_status' order.id %}" 
+                                                              class="d-inline-block">
+                                                            {% csrf_token %}
+                                                            <select name="status" 
+                                                                    class="form-select form-select-sm rounded-pill border-primary w-auto" 
+                                                                    onchange="this.form.submit()"
+                                                                    style="min-width: 180px;">
+                                                                {% for status_code, status_name in order.STATUS_CHOICES %}
+                                                                    <option value="{{ status_code }}" 
+                                                                            {% if order.status == status_code %}selected{% endif %}
+                                                                            class="{% if status_code == 'completed' %}text-success
+                                                                                   {% elif status_code == 'cancelled' %}text-danger
+                                                                                   {% elif status_code == 'shipped' %}text-warning
+                                                                                   {% else %}text-primary{% endif %}">
+                                                                        {{ status_name }}
+                                                                    </option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-0 ps-0">
+                                                        <span class="text-muted small">Способ оплаты:</span>
+                                                    </td>
+                                                    <td class="border-0 pe-0">
+                                                        <span class="fw-medium">{{ order.get_payment_method_display }}</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-0 ps-0">
+                                                        <span class="text-muted small">Общая сумма:</span>
+                                                    </td>
+                                                    <td class="border-0 pe-0">
+                                                        <span class="fw-bold fs-5 text-dark">{{ order.total_price }} ₽</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         
                         
-                        <div class="col-md-6">
-                            <h5>Информация о клиенте</h5>
-                            <table class="table table-sm">
-                                <tr>
-                                    <th width="40%">Имя:</th>
-                                    <td>{{ order.first_name }} {{ order.last_name }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Email:</th>
-                                    <td><a href="mailto:{{ order.email }}">{{ order.email }}</a></td>
-                                </tr>
-                                <tr>
-                                    <th>Телефон:</th>
-                                    <td><a href="tel:{{ order.phone }}">{{ order.phone }}</a></td>
-                                </tr>
-                                <tr>
-                                    <th>Адрес:</th>
-                                    <td>{{ order.address }}, {{ order.city }}, {{ order.postal_code }}</td>
-                                </tr>
-                                {% if order.user %}
-                                <tr>
-                                    <th>Аккаунт:</th>
-                                    <td>
-                                        <a href="#">{{ order.user.email }}</a>
-                                        (зарегистрирован)
-                                    </td>
-                                </tr>
-                                {% endif %}
-                            </table>
+                        <div class="col-lg-6">
+                            <div class="card border-0 bg-light-subtle h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title fw-bold mb-3 pb-2 border-bottom">
+                                        <i class="fas fa-user me-2 text-about"></i>Информация о клиенте
+                                    </h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-borderless mb-0">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="border-0 ps-0" width="40%">
+                                                        <span class="text-muted small">Имя:</span>
+                                                    </td>
+                                                    <td class="border-0 pe-0">
+                                                        <span class="fw-medium">{{ order.first_name }} {{ order.last_name }}</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-0 ps-0">
+                                                        <span class="text-muted small">Email:</span>
+                                                    </td>
+                                                    <td class="border-0 pe-0">
+                                                        <a href="mailto:{{ order.email }}" class="text-decoration-none">
+                                                            <i class="fas fa-envelope me-1 text-about"></i>
+                                                            {{ order.email }}
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-0 ps-0">
+                                                        <span class="text-muted small">Телефон:</span>
+                                                    </td>
+                                                    <td class="border-0 pe-0">
+                                                        <a href="tel:{{ order.phone }}" class="text-decoration-none">
+                                                            <i class="fas fa-phone me-1 text-about"></i>
+                                                            {{ order.phone }}
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-0 ps-0">
+                                                        <span class="text-muted small">Адрес:</span>
+                                                    </td>
+                                                    <td class="border-0 pe-0">
+                                                        <span class="fw-medium">
+                                                            {{ order.address }}, {{ order.city }}, {{ order.postal_code }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                                {% if order.user %}
+                                                <tr>
+                                                    <td class="border-0 ps-0">
+                                                        <span class="text-muted small">Аккаунт:</span>
+                                                    </td>
+                                                    <td class="border-0 pe-0">
+                                                        <span class="badge bg-primary-subtle text-about rounded-pill px-3">
+                                                            <i class="fas fa-user-check me-1"></i>
+                                                            Зарегистрирован
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                                {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
                     
                     <div class="row mt-4">
                         <div class="col-12">
-                            <h5>Товары в заказе</h5>
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Товар</th>
-                                            <th>Цена</th>
-                                            <th>Количество</th>
-                                            <th>Сумма</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for item in order_items %}
-                                        <tr>
-                                            <td>
-                                                <strong>{{ item.product.name }}</strong><br>
-                                                <small class="text-muted">Артикул: {{ item.product.sku }}</small>
-                                            </td>
-                                            <td>{{ item.price }} ₽</td>
-                                            <td>{{ item.quantity }}</td>
-                                            <td>{{ item.total_price }} ₽</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="3" class="text-end"><strong>Итого:</strong></td>
-                                            <td><strong>{{ order.total_price }} ₽</strong></td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-white border-0 pt-3 pb-3">
+                                    <h5 class="fw-bold mb-0">
+                                        <i class="fas fa-boxes me-2 text-about"></i>Товары в заказе
+                                    </h5>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover mb-0">
+                                            <thead class="bg-light">
+                                                <tr>
+                                                    <th class="border-0 ps-4">Товар</th>
+                                                    <th class="border-0">Цена</th>
+                                                    <th class="border-0">Кол-во</th>
+                                                    <th class="border-0 pe-4 text-end">Сумма</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for item in order_items %}
+                                                <tr class="transition-all">
+                                                    <td class="ps-4">
+                                                        <div class="fw-bold">{{ item.product.name }}</div>
+                                                        <div class="small text-muted">
+                                                            <i class="fas fa-barcode me-1"></i>
+                                                            Артикул: {{ item.product.sku }}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="fw-medium">{{ item.price }} ₽</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-primary-subtle text-about rounded-pill px-3">
+                                                            {{ item.quantity }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="pe-4 text-end">
+                                                        <span class="fw-bold text-dark">{{ item.total_price }} ₽</span>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                            <tfoot class="bg-light">
+                                                <tr>
+                                                    <td colspan="3" class="border-0 ps-4 text-end">
+                                                        <h6 class="mb-0 fw-bold">Итого:</h6>
+                                                    </td>
+                                                    <td class="border-0 pe-4 text-end">
+                                                        <h4 class="mb-0 fw-bold text-about">{{ order.total_price }} ₽</h4>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -144,26 +242,27 @@
                     {% if order.notes %}
                     <div class="row mt-4">
                         <div class="col-12">
-                            <h5>Примечания</h5>
-                            <div class="card">
+                            <div class="card border-0 bg-light-subtle">
                                 <div class="card-body">
-                                    {{ order.notes|linebreaks }}
+                                    <h5 class="fw-bold mb-3">
+                                        <i class="fas fa-sticky-note me-2 text-about"></i>Примечания к заказу
+                                    </h5>
+                                    <div class="bg-white rounded-3 p-4 border">
+                                        {{ order.notes|linebreaks }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     {% endif %}
                 </div>
-                <div class="card-footer">
-                    <div class="d-flex justify-content-between">
-                        <a href="{% url 'orders:all_orders' %}" class="btn btn-secondary">
+                <div class="card-footer bg-white border-0 pt-3 pb-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{% url 'orders:all_orders' %}" class="btn btn-outline-about rounded-pill px-4">
                             <i class="fas fa-arrow-left me-1"></i>Вернуться к списку
                         </a>
-                        <div>
-                            <a href="{% url 'orders:order_update' order.id %}" class="btn btn-primary">
-                                <i class="fas fa-edit me-1"></i>Редактировать
-                            </a>
-                            <button onclick="window.print()" class="btn btn-info">
+                        <div class="btn-group shadow-sm">
+                            <button onclick="window.print()" class="btn btn-info rounded-end-pill px-4">
                                 <i class="fas fa-print me-1"></i>Печать
                             </button>
                         </div>
@@ -173,4 +272,37 @@
         </div>
     </div>
 </div>
+
+<style>
+.table-borderless tbody tr {
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.table-borderless tbody tr:last-child {
+    border-bottom: none;
+}
+
+.card {
+    border-radius: 1rem;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Анимация строк товаров
+    const productRows = document.querySelectorAll('tbody tr');
+    productRows.forEach(row => {
+        row.addEventListener('mouseenter', function() {
+            this.classList.add('bg-light');
+        });
+        row.addEventListener('mouseleave', function() {
+            this.classList.remove('bg-light');
+        });
+    });
+});
+</script>
 {% endblock %}

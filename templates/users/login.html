@@ -4,31 +4,172 @@
 {% block title %}Вход - GearLock{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">Вход в личный кабинет</h4>
-            </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form|crispy }}
-                    
-                    <div class="d-grid mb-3">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-sign-in-alt"></i> Войти
-                        </button>
-                    </div>
-                    
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-primary-gradient text-white py-4">
                     <div class="text-center">
-                        <a href="{% url 'users:register' %}" class="text-decoration-none me-3">
-                            Нет аккаунта? Зарегистрироваться
-                        </a>
+                        <div class="icon-lg bg-white text-about rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
+                            <i class="fas fa-sign-in-alt fs-3"></i>
+                        </div>
+                        <h1 class="h3 fw-bold mb-1">Вход в аккаунт</h1>
+                        <p class="mb-0 opacity-90">Войдите в свой аккаунт GearLock</p>
                     </div>
-                </form>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold ">
+                                <i class="fas fa-envelope text-about me-2"></i>
+                                Email адрес *
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="fas fa-at"></i>
+                                </span>
+                                <input type="email" name="username" class="form-control" 
+                                       placeholder="ваш@email.com" required>
+                            </div>
+                            <div class="invalid-feedback">
+                                Пожалуйста, введите корректный email адрес.
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-lock text-about me-2"></i>
+                                    Пароль *
+                                </label>
+                                <a href="#" class="small text-decoration-none text-about">
+                                    Забыли пароль?
+                                </a>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="fas fa-key"></i>
+                                </span>
+                                <input type="password" name="password" class="form-control" 
+                                       placeholder="Ваш пароль" required>
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback">
+                                Пожалуйста, введите пароль.
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="remember" name="remember">
+                                <label class="form-check-label" for="remember">
+                                    Запомнить меня на этом устройстве
+                                </label>
+                            </div>
+                        </div>
+                        
+                        
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Неверный email или пароль. Попробуйте еще раз.
+                        </div>
+                        {% endif %}
+                        
+                        
+                        <div class="d-grid mb-4">
+                            <button type="submit" class="btn btn-primary btn-lg py-3">
+                                <i class="fas fa-sign-in-alt me-2"></i>
+                                Войти в аккаунт
+                            </button>
+                        </div>
+                        
+                        
+                        <div class="position-relative mb-4">
+                            <hr>
+                            <div class="position-absolute top-50 start-50 translate-middle bg-white px-3">
+                                <span class="text-muted small">или</span>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="d-grid gap-2 mb-4">
+                            <button type="button" class="btn btn-outline-about">
+                                <i class="fab fa-google me-2"></i>
+                                Войти через Google
+                            </button>
+                        </div>
+                        
+                        
+                        <div class="text-center">
+                            <p class="mb-2 text-muted">Еще нет аккаунта?</p>
+                            <a href="{% url 'users:register' %}" class="btn btn-outline-success">
+                                <i class="fas fa-user-plus me-2"></i>
+                                Создать новый аккаунт
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            
+            <div class="row mt-5 g-3">
+                <div class="col-md-4 text-center">
+                    <div class="icon-md bg-primary bg-opacity-10  rounded-circle d-inline-flex align-items-center justify-content-center mb-2">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h6 class="fw-bold">Быстрая доставка</h6>
+                    <p class="small text-muted mb-0">По всей России</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="icon-md bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-2">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h6 class="fw-bold">Безопасность</h6>
+                    <p class="small text-muted mb-0">Защита данных</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="icon-md bg-warning bg-opacity-10 text-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-2">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h6 class="fw-bold">Поддержка 24/7</h6>
+                    <p class="small text-muted mb-0">Всегда на связи</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+// Валидация формы
+(function () {
+    'use strict'
+    const forms = document.querySelectorAll('.needs-validation')
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
+
+// Переключение видимости пароля
+document.getElementById('togglePassword').addEventListener('click', function() {
+    const passwordInput = this.parentElement.querySelector('input')
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password'
+    passwordInput.setAttribute('type', type)
+    this.querySelector('i').classList.toggle('fa-eye')
+    this.querySelector('i').classList.toggle('fa-eye-slash')
+})
+</script>
 {% endblock %}

@@ -56,13 +56,13 @@ def permission_required(perm, login_url=None, message=None):
         return _wrapped_view
     return decorator
 
-# Готовые декораторы для конкретных ролей
+
 customer_required = role_required('customer', message='Требуется роль покупателя')
 manager_required = role_required('manager', message='Требуется роль менеджера')
 content_manager_required = role_required('content_manager', message='Требуется роль контент-менеджера')
 admin_required = role_required('admin', message='Требуется роль администратора')
 
-# Стандартные декораторы Django с нашими правами
+
 def staff_required(view_func=None, login_url=None, message=None):
     """
     Декоратор для проверки is_staff

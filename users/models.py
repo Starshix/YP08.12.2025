@@ -35,10 +35,10 @@ class Role(models.Model):
 
 
 class User(AbstractUser):
-    # Делаем email обязательным и уникальным
+
     email = models.EmailField(_('email address'), unique=True)
     
-    # Связь с кастомной ролью
+
     role = models.ForeignKey(
         Role,
         on_delete=models.SET_NULL,
@@ -48,14 +48,14 @@ class User(AbstractUser):
         related_name='users'
     )
     
-    # Дополнительные поля
+
     phone = models.CharField('Телефон', max_length=20, blank=True)
     address = models.TextField('Адрес', blank=True)
 
     postal_code = models.CharField('Почтовый индекс', max_length=20, blank=True)
     birth_date = models.DateField('Дата рождения', null=True, blank=True)
     
-    # Указываем, что для входа используем email вместо username
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name']
     
@@ -91,7 +91,7 @@ class User(AbstractUser):
         
         permissions.update(self.user_permissions.all())
         
-        # Добавляем права из групп
+
         for group in self.groups.all():
             permissions.update(group.permissions.all())
         
@@ -102,32 +102,32 @@ def has_perm(self, perm, obj=None):
     if self.is_superuser:
         return True
     
-    # Получаем codename из строки разрешения
+
     if '.' in perm:
-        # Формат: "app_label.codename"
+
         codename = perm.split('.')[1]
     else:
         codename = perm
     
-    # Проверяем права через роль
+
     if self.role:
-        # Проверяем напрямую по codename
+
         if self.role.permissions.filter(codename=codename).exists():
             return True
         
-        # Также проверяем через группы роли
+
         for group in self.role.groups.all():
             if group.permissions.filter(codename=codename).exists():
                 return True
     
-    # Проверяем личные права пользователя
+
     if self.user_permissions.filter(codename=codename).exists():
         return True
     
-    # Проверяем права через группы пользователя
+
     for group in self.groups.all():
         if group.permissions.filter(codename=codename).exists():
             return True
     
-    # Проверяем встроенные Django права
+
     return super().has_perm(perm, obj)

@@ -22,6 +22,32 @@ def cart_add(request, product_id):
         quantity=quantity, 
         override_quantity=override
     )
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'success': True,
+            'message': 'Товар добавлен в корзину',
+            'cart_total_quantity': len(cart),
+            'cart_total_price': str(cart.get_total_price()),
+        })
+    
+    return redirect('catalog:product_list')
+
+@require_POST
+def cart_update(request, product_id):
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
+    
+
+    quantity = int(request.POST.get('quantity', 1))
+    override = request.POST.get('override') == 'true'
+
+
+    cart.add(
+        product=product, 
+        quantity=quantity, 
+        override_quantity=override
+    )
     
 
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':

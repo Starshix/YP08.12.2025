@@ -3,71 +3,219 @@
 {% block title %}О компании - GearLock{% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-12">
-        <h1>О компании GearLock</h1>
-        <p class="lead">Надежные автоаксессуары для вашего комфорта и безопасности</p>
+<div class="container py-4">
+    
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="d-flex align-items-center mb-3">
+                <div class="icon-lg bg-primary-gradient rounded-3 d-flex align-items-center justify-content-center me-3">
+                    <i class="fas fa-building text-white fs-3"></i>
+                </div>
+                <div>
+                    <h1 class="fw-bold mb-1">О компании <span class="text-about">GearLock</span></h1>
+                    <p class="text-muted">Надежные автоаксессуары для вашего комфорта и безопасности</p>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-<div class="row mb-5">
-    <div class="col-md-6">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9302.186116759693!2d48.38104433737596!3d54.34732274952923!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x415d3a02350e60f1%3A0x71f41ea55fac4e37!2z0KPQu9GM0Y_QvdC-0LLRgdC60LjQuSDQs9C-0YHRg9C00LDRgNGB0YLQstC10L3QvdGL0Lkg0YLQtdGF0L3QuNGH0LXRgdC60LjQuSDRg9C90LjQstC10YDRgdC40YLQtdGCICjQo9C70JPQotCjKQ!5e0!3m2!1sru!2sru!4v1765736760924!5m2!1sru!2sru" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div>
-    <div class="col-md-6">
-        <h3>Наша история</h3>
-        <p>Компания GearLock была основана в 2010 году с целью предоставить автомобилистам качественные и надежные аксессуары по доступным ценам.</p>
+    
+    <div class="row g-4 mb-5">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-primary-gradient text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-map-marked-alt me-2"></i>Мы на карте</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="map-container">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9302.186116759693!2d48.38104433737596!3d54.34732274952923!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x415d3a02350e60f1%3A0x71f41ea55fac4e37!2z0KPQu9GM0Y_QvdC-0LLRgdC60LjQuSDQs9C-0YHRg9C00LDRgNGB0YLQstC10L3QvdGL0Lkg0YLQtdGF0L3QuNGH0LXRgdC60LjQuSDRg9C90LjQstC10YDRgdC40YLQtdGCICjQo9C70JPQotCjKQ!5e0!3m2!1sru!2sru!4v1765736760924!5m2!1sru!2sru" 
+                            width="100%" 
+                            height="400" 
+                            style="border:0;" 
+                            allowfullscreen 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade"
+                            class="rounded-bottom">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
         
-        <h3 class="mt-4">Наша миссия</h3>
-        <p>Мы стремимся сделать ваши поездки комфортными и безопасными, предлагая только проверенные временем товары от ведущих производителей.</p>
-        
-        <h3 class="mt-4">Наши ценности</h3>
-        <ul>
-            <li>Качество продукции</li>
-            <li>Доступные цены</li>
-            <li>Профессиональная поддержка</li>
-            <li>Быстрая доставка</li>
-        </ul>
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-primary-gradient text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-history me-2"></i>Наша история</h5>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Компания GearLock была основана в 2010 году с целью предоставить автомобилистам качественные и надежные аксессуары по доступным ценам.</p>
+                    
+                    <h5 class="mt-4 fw-bold">
+                        <i class="fas fa-bullseye text-about me-2"></i>
+                        Наша миссия
+                    </h5>
+                    <p>Мы стремимся сделать ваши поездки комфортными и безопасными, предлагая только проверенные временем товары от ведущих производителей.</p>
+                    
+                    <h5 class="mt-4 fw-bold">
+                        <i class="fas fa-star text-about me-2"></i>
+                        Наши ценности
+                    </h5>
+                    <div class="row mt-3">
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-start">
+                                <div class="icon-sm bg-primary text-white rounded-2 me-3">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Качество продукции</h6>
+                                    <p class="small text-muted mb-0">Сертифицированные товары</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-start">
+                                <div class="icon-sm bg-success text-white rounded-2 me-3">
+                                    <i class="fas fa-tag"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Доступные цены</h6>
+                                    <p class="small text-muted mb-0">Честные цены без накруток</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-start">
+                                <div class="icon-sm bg-info text-white rounded-2 me-3">
+                                    <i class="fas fa-headset"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Профессиональная поддержка</h6>
+                                    <p class="small text-muted mb-0">Помощь 24/7</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-start">
+                                <div class="icon-sm bg-warning text-white rounded-2 me-3">
+                                    <i class="fas fa-shipping-fast"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Быстрая доставка</h6>
+                                    <p class="small text-muted mb-0">По всей России</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-<div class="row text-center">
-    <div class="col-md-3 mb-4">
-        <div class="card h-100">
-            <div class="card-body">
-                <i class="fas fa-award fa-3x text-primary mb-3"></i>
-                <h5>Качество</h5>
-                <p>Сертифицированная продукция</p>
+    
+    <div class="row mb-5">
+        <div class="col-12 mb-4">
+            <h2 class="fw-bold border-bottom pb-3">
+                <i class="fas fa-award text-about me-2"></i>
+                Почему выбирают нас
+            </h2>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 h-100 shadow-hover">
+                <div class="card-body text-center p-4">
+                    <div class="icon-xl bg-primary-gradient text-white rounded-circle mb-3 mx-auto">
+                        <i class="fas fa-award fs-3"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Качество</h5>
+                    <p class="text-muted small">Сертифицированная продукция от проверенных брендов</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 h-100 shadow-hover">
+                <div class="card-body text-center p-4">
+                    <div class="icon-xl bg-success-gradient text-white rounded-circle mb-3 mx-auto">
+                        <i class="fas fa-shipping-fast fs-3"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Доставка</h5>
+                    <p class="text-muted small">Быстрая доставка по всей России от 1 дня</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 h-100 shadow-hover">
+                <div class="card-body text-center p-4">
+                    <div class="icon-xl bg-info-gradient text-white rounded-circle mb-3 mx-auto">
+                        <i class="fas fa-headset fs-3"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Поддержка</h5>
+                    <p class="text-muted small">Круглосуточная поддержка клиентов</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 h-100 shadow-hover">
+                <div class="card-body text-center p-4">
+                    <div class="icon-xl bg-warning-gradient text-white rounded-circle mb-3 mx-auto">
+                        <i class="fas fa-shield-alt fs-3"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Гарантия</h5>
+                    <p class="text-muted small">Гарантия на все товары 1 год и более</p>
+                </div>
             </div>
         </div>
     </div>
+
     
-    <div class="col-md-3 mb-4">
-        <div class="card h-100">
-            <div class="card-body">
-                <i class="fas fa-shipping-fast fa-3x text-success mb-3"></i>
-                <h5>Доставка</h5>
-                <p>Быстрая доставка по всей России</p>
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 bg-primary-gradient text-white shadow-lg">
+                <div class="card-body p-4 p-md-5">
+                    <div class="row text-center">
+                        <div class="col-md-3 mb-4 mb-md-0">
+                            <div class="display-4 fw-bold">10+</div>
+                            <p class="mb-0">Лет на рынке</p>
+                        </div>
+                        <div class="col-md-3 mb-4 mb-md-0">
+                            <div class="display-4 fw-bold">5K+</div>
+                            <p class="mb-0">Товаров в каталоге</p>
+                        </div>
+                        <div class="col-md-3 mb-4 mb-md-0">
+                            <div class="display-4 fw-bold">50K+</div>
+                            <p class="mb-0">Довольных клиентов</p>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="display-4 fw-bold">24/7</div>
+                            <p class="mb-0">Поддержка</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
     
-    <div class="col-md-3 mb-4">
-        <div class="card h-100">
-            <div class="card-body">
-                <i class="fas fa-headset fa-3x text-info mb-3"></i>
-                <h5>Поддержка</h5>
-                <p>Круглосуточная поддержка клиентов</p>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3 mb-4">
-        <div class="card h-100">
-            <div class="card-body">
-                <i class="fas fa-shield-alt fa-3x text-warning mb-3"></i>
-                <h5>Гарантия</h5>
-                <p>Гарантия на все товары 1 год</p>
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center p-5">
+                    <h3 class="fw-bold mb-3">Начните покупать у нас уже сегодня!</h3>
+                    <p class="text-muted mb-4">Присоединяйтесь к тысячам довольных клиентов GearLock</p>
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <a href="{% url 'catalog:product_list' %}" class="btn btn-primary btn-lg px-4">
+                            <i class="fas fa-shopping-cart me-2"></i>
+                            Перейти в каталог
+                        </a>
+                        <a href="{% url 'pages:contact' %}" class="btn btn-outline-about btn-lg px-4">
+                            <i class="fas fa-phone me-2"></i>
+                            Связаться с нами
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -57,7 +57,7 @@
                                             <td><strong>{{ order.total_price }} ₽</strong></td>
                                             <td>
                                                 <span class="badge 
-                                                    {% if order.status == 'completed' %}bg-success
+                                                    {% if order.status == 'delivered' %}bg-success
                                                     {% elif order.status == 'processing' or order.status == 'new' %}bg-primary
                                                     {% elif order.status == 'shipped' %}bg-warning
                                                     {% elif order.status == 'cancelled' %}bg-danger
@@ -74,64 +74,6 @@
                                                         <i class="fas fa-eye"></i>
                                                     </a>
                                                     
-                                                    
-                                                    <div class="btn-group" role="group">
-                                                        <button type="button" 
-                                                                class="btn btn-sm btn-outline-info dropdown-toggle" 
-                                                                data-bs-toggle="dropdown"
-                                                                title="Быстрые действия">
-                                                            <i class="fas fa-cog"></i>
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li>
-                                                                <form method="post" 
-                                                                      action="{% url 'orders:change_order_status' order.id %}" 
-                                                                      class="dropdown-item p-0">
-                                                                    {% csrf_token %}
-                                                                    <input type="hidden" name="status" value="processing">
-                                                                    <button type="submit" class="btn btn-link text-start w-100">
-                                                                        <i class="fas fa-play me-2"></i>В обработку
-                                                                    </button>
-                                                                </form>
-                                                            </li>
-                                                            <li>
-                                                                <form method="post" 
-                                                                      action="{% url 'orders:change_order_status' order.id %}"
-                                                                      class="dropdown-item p-0">
-                                                                    {% csrf_token %}
-                                                                    <input type="hidden" name="status" value="shipped">
-                                                                    <button type="submit" class="btn btn-link text-start w-100">
-                                                                        <i class="fas fa-truck me-2"></i>Отправить
-                                                                    </button>
-                                                                </form>
-                                                            </li>
-                                                            <li>
-                                                                <form method="post" 
-                                                                    action="{% url 'orders:change_order_status' order.id %}"
-                                                                    class="dropdown-item p-0">
-                                                                    {% csrf_token %}
-                                                                    <input type="hidden" name="status" value="delivered">
-                                                                    <button type="submit" class="btn btn-link text-start w-100">
-                                                                        <i class="fas fa-check me-2"></i>Завершить
-                                                                    </button>
-                                                                </form>
-                                                            </li>
-                                                            <li><hr class="dropdown-divider"></li>
-                                                            <li>
-                                                                <form method="post" 
-                                                                      action="{% url 'orders:change_order_status' order.id %}"
-                                                                      class="dropdown-item p-0">
-                                                                    {% csrf_token %}
-                                                                    <input type="hidden" name="status" value="cancelled">
-                                                                    <button type="submit" 
-                                                                            class="btn btn-link text-start w-100 text-danger"
-                                                                            onclick="return confirm('Вы уверены, что хотите отменить заказ?')">
-                                                                        <i class="fas fa-times me-2"></i>Отменить
-                                                                    </button>
-                                                                </form>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
                                                 </div>
                                             </td>
                                         </tr>
@@ -151,7 +93,7 @@
                                             <option value="new" {% if request.GET.status == 'new' %}selected{% endif %}>Новый</option>
                                             <option value="processing" {% if request.GET.status == 'processing' %}selected{% endif %}>В обработке</option>
                                             <option value="shipped" {% if request.GET.status == 'shipped' %}selected{% endif %}>Отправлен</option>
-                                            <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Завершен</option>
+                                            <option value="delivered" {% if request.GET.status == 'delivered' %}selected{% endif %}>Завершен</option>
                                             <option value="cancelled" {% if request.GET.status == 'cancelled' %}selected{% endif %}>Отменен</option>
                                         </select>
                                     </div>

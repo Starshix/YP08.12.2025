@@ -51,7 +51,7 @@ class ProductForm(forms.ModelForm):
             'name', 'slug', 'category', 'brand', 'sku', 'price', 'old_price',
             'description', 'features', 'availability', 'quantity',
             'is_active', 'is_new', 'is_sale', 'is_featured'
-        ]  # Добавили 'slug' в список полей
+        ] 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Название товара'}),
             'slug': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'URL (заполнится автоматически)'}),
@@ -77,13 +77,12 @@ class ProductForm(forms.ModelForm):
         name = cleaned_data.get('name')
         slug = cleaned_data.get('slug')
         
-        # Если slug пустой, генерируем его из имени
         if name and (not slug or slug.strip() == ''):
             from django.utils.text import slugify
             base_slug = slugify(name)
             
             if not base_slug:
-                # Используем транслитерацию
+
                 import re
                 translit_map = {
                     'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd',
@@ -112,7 +111,6 @@ class ProductForm(forms.ModelForm):
                 sku = cleaned_data.get('sku', '')
                 base_slug = slugify(sku) if sku else "product"
             
-            # Делаем slug уникальным
             original_slug = base_slug
             counter = 1
             
@@ -158,7 +156,6 @@ class CategoryForm(forms.ModelForm):
         self.fields['slug'].required = False
         self.fields['slug'].help_text = 'URL-адрес категории. Заполнится автоматически из названия.'
         
-        # Настройка родительской категории
         if self.instance and self.instance.pk:
             exclude_ids = [self.instance.pk]
             exclude_ids.extend(child.id for child in self.instance.get_all_children)
@@ -173,19 +170,17 @@ class CategoryForm(forms.ModelForm):
         name = cleaned_data.get('name')
         slug = cleaned_data.get('slug')
         
-        # Если slug пустой, генерируем его из имени
         if name and (not slug or slug.strip() == ''):
             from django.utils.text import slugify
             base_slug = slugify(name)
             
             if not base_slug:
-                # Используем простую транслитерацию
                 import re
                 name_lower = name.lower()
                 translit_result = []
                 for char in name_lower:
                     if 'а' <= char <= 'я':
-                        # Простая замена русских букв
+
                         translit_dict = {
                             'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd',
                             'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i',
@@ -207,7 +202,7 @@ class CategoryForm(forms.ModelForm):
             if not base_slug:
                 base_slug = "category"
             
-            # Делаем slug уникальным
+
             original_slug = base_slug
             counter = 1
             

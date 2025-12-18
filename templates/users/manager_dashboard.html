@@ -1,22 +1,32 @@
-
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Панель менеджера{% endblock %}
+{% block title %}Панель менеджера - GearLock{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container-fluid py-4">
+    
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="mb-0">
-                        <i class="fas fa-chart-line me-2"></i>Панель управления менеджера
-                    </h4>
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-success-gradient text-white py-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-lg bg-white text-success rounded-3 me-3">
+                                <i class="fas fa-chart-line fs-3"></i>
+                            </div>
+                            <div>
+                                <h1 class="h3 fw-bold mb-1">Панель управления менеджера</h1>
+                                <p class="mb-0 opacity-90">Добро пожаловать, {{ user.first_name|default:user.username }}!</p>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="badge bg-white text-success">{% now "d.m.Y" %}</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <p class="lead">Добро пожаловать, {{ user.first_name }}!</p>
-                    <p>Вы вошли как менеджер. Здесь вы можете управлять заказами и клиентами.</p>
+                    <p class="lead mb-0">Управление заказами, клиентами и анализ продаж интернет-магазина GearLock</p>
                 </div>
             </div>
         </div>
@@ -24,61 +34,266 @@
 
     
     <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card bg-primary text-white">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-hover h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="icon-xl bg-primary-gradient text-white rounded-circle">
+                                <i class="fas fa-shopping-cart fs-3"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted text-uppercase mb-1">Всего заказов</h6>
+                            <h2 class="fw-bold mb-0">{{ total_orders }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{% url 'orders:all_orders' %}" class="btn btn-sm btn-outline-primary w-100">
+                        <i class="fas fa-list me-1"></i> Управление
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-hover h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="icon-xl bg-success-gradient text-white rounded-circle">
+                                <i class="fas fa-check-circle fs-3"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted text-uppercase mb-1">Выполнено</h6>
+                            <h2 class="fw-bold mb-0">{{ completed_orders }}</h2>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{% url 'orders:all_orders' %}?status=delivered" class="btn btn-sm btn-outline-success w-100">
+                        <i class="fas fa-check me-1"></i> Показать
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-hover h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="icon-xl bg-info-gradient text-white rounded-circle">
+                                <i class="fas fa-users fs-3"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted text-uppercase mb-1">Клиентов</h6>
+                            <h2 class="fw-bold mb-0">{{ total_customers }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="{% url 'users:customer_list' %}" class="btn btn-sm btn-outline-info w-100">
+                        <i class="fas fa-users me-1"></i> Список
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-0 shadow-hover h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="icon-xl bg-warning-gradient text-white rounded-circle">
+                                <i class="fas fa-ruble-sign fs-3"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted text-uppercase mb-1">Общая выручка</h6>
+                            <h2 class="fw-bold mb-0">{{ total_revenue|floatformat:"0" }} ₽</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a href="#" class="btn btn-sm btn-outline-warning w-100" data-bs-toggle="modal" data-bs-target="#revenueModal">
+                        <i class="fas fa-chart-bar me-1"></i> Аналитика
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="row">
+        
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-light border-0 py-3">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-bolt text-success me-2"></i>
+                        Быстрые действия
+                    </h5>
+                </div>
                 <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h5 class="card-title">{{ total_orders }}</h5>
-                            <p class="card-text mb-0">Всего заказов</p>
-                        </div>
-                        <div class="display-4">
-                            <i class="fas fa-shopping-cart"></i>
-                        </div>
+                    <div class="d-grid gap-3">
+                        <a href="{% url 'orders:all_orders' %}" class="btn btn-primary btn-lg d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-list-alt me-2"></i>
+                                Управление заказами
+                            </div>
+                            <span class="badge bg-white text-about">{{ total_orders }}</span>
+                        </a>
+                        
+                        <a href="{% url 'users:customer_list' %}" class="btn btn-success btn-lg d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-users me-2"></i>
+                                Управление клиентами
+                            </div>
+                            <span class="badge bg-white text-success">{{ total_customers }}</span>
+                        </a>
+                        
+                        <a href="#" class="btn btn-info btn-lg d-flex justify-content-between align-items-center" data-bs-toggle="modal" data-bs-target="#statsModal">
+                            <div>
+                                <i class="fas fa-chart-bar me-2"></i>
+                                Статистика продаж
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                        
+                        <a href="#" class="btn btn-warning btn-lg d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-comments me-2"></i>
+                                Обратная связь
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card bg-success text-white">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h5 class="card-title">{{ completed_orders }}</h5>
-                            <p class="card-text mb-0">Выполнено</p>
-                        </div>
-                        <div class="display-4">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
+
+        
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-light border-0 py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold mb-0">
+                            <i class="fas fa-clock text-success me-2"></i>
+                            Последние заказы
+                        </h5>
+                        <span class="badge bg-success">{{ recent_orders|length }}</span>
                     </div>
+                </div>
+                <div class="card-body p-0">
+                    {% if recent_orders %}
+                        <div class="list-group list-group-flush">
+                            {% for order in recent_orders %}
+                            <div class="list-group-item border-0 border-bottom py-3 hover-row spisok">
+                                <div class="row align-items-center justify-content-between">
+                                    <div class="col-auto">
+                                        <div class="icon-sm bg-primary bg-opacity-10 rounded-circle">
+                                            <i class="fas fa-shopping-bag"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <h6 class="fw-bold mb-0">Заказ #{{ order.id }}</h6>
+                                            <small class="text-muted">{{ order.created_at|date:"H:i" }}</small>
+                                        </div>
+                                        <p class="mb-1 small">
+                                            {% if order.user %}
+                                                <i class="fas fa-user me-1"></i>
+                                                {{ order.user.get_full_name|default:order.user.email }}
+                                            {% else %}
+                                                <i class="fas fa-user-secret me-1"></i>
+                                                Гость
+                                            {% endif %}
+                                        </p>
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <span class="fw-bold text-about">{{ order.total_price }} ₽</span>
+                                                <small class="text-muted ms-2">{{ order.items.count }} товар(ов)</small>
+                                            </div>
+                                            <span class="badge 
+                                                {% if order.status == 'completed' %}bg-success
+                                                {% elif order.status == 'processing' %}bg-primary
+                                                {% elif order.status == 'shipped' %}bg-info
+                                                {% elif order.status == 'cancelled' %}bg-danger
+                                                {% else %}bg-secondary{% endif %}">
+                                                {{ order.get_status_display }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <a href="{% url 'orders:order_detail' order.id %}" 
+                                           class="btn btn-sm btn-outline-primary" title="Детали">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted mb-3">Заказов пока нет</h5>
+                            <p class="text-muted small">Как только появятся новые заказы, они отобразятся здесь</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-light border-0">
+                    <a href="{% url 'orders:all_orders' %}" class="btn btn-outline-success w-100">
+                        <i class="fas fa-list me-1"></i> Все заказы
+                    </a>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card bg-info text-white">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h5 class="card-title">{{ total_customers }}</h5>
-                            <p class="card-text mb-0">Клиентов</p>
-                        </div>
-                        <div class="display-4">
-                            <i class="fas fa-users"></i>
-                        </div>
-                    </div>
+    </div>
+
+    
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light border-0 py-3">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-chart-pie text-success me-2"></i>
+                        Статистика заказов
+                    </h5>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-warning text-white">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h5 class="card-title">{{ total_revenue|floatformat:"0" }} ₽</h5>
-                            <p class="card-text mb-0">Общая выручка</p>
+                    <div class="row">
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="display-5 fw-bold text-primary">{{ processing_orders|default:"0" }}</div>
+                            <div class="small text-muted">В обработке</div>
+                            <div class="progress mt-2" style="height: 6px;">
+                                <div class="progress-bar bg-primary" style="width: {{ processing_percentage|default:"0" }}%"></div>
+                            </div>
                         </div>
-                        <div class="display-4">
-                            <i class="fas fa-ruble-sign"></i>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="display-5 fw-bold text-info">{{ shipped_orders|default:"0" }}</div>
+                            <div class="small text-muted">Доставляются</div>
+                            <div class="progress mt-2" style="height: 6px;">
+                                <div class="progress-bar bg-info" style="width: {{ shipped_percentage|default:"0" }}%"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="display-5 fw-bold text-primary">{{ completed_orders|default:"0" }}</div>
+                            <div class="small text-muted">Выполнены</div>
+                            <div class="progress mt-2" style="height: 6px;">
+                                <div class="progress-bar bg-success" style="width: {{ completed_percentage|default:"0" }}%"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="display-5 fw-bold text-danger">{{ cancelled_orders|default:"0" }}</div>
+                            <div class="small text-muted">Отменены</div>
+                            <div class="progress mt-2" style="height: 6px;">
+                                <div class="progress-bar bg-danger" style="width: {{ cancelled_percentage|default:"0" }}%"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -88,151 +303,155 @@
 
     
     <div class="row">
-        
-        <div class="col-md-6 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Быстрые действия</h5>
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light border-0 py-3">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-info-circle text-success me-2"></i>
+                        Полезная информация
+                    </h5>
                 </div>
                 <div class="card-body">
-                    <div class="list-group">
-                        <a href="{% url 'orders:all_orders' %}" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">
-                                    <i class="fas fa-list-alt me-2"></i>Управление заказами
-                                </h6>
-                                <span class="badge bg-primary rounded-pill">{{ total_orders }}</span>
-                            </div>
-                            <p class="mb-1 small text-muted">Просмотр и управление всеми заказами</p>
-                        </a>
-                        <a href="{% url 'users:customer_list' %}" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">
-                                    <i class="fas fa-users me-2"></i>Управление клиентами
-                                </h6>
-                                <span class="badge bg-success rounded-pill">{{ total_customers }}</span>
-                            </div>
-                            <p class="mb-1 small text-muted">Просмотр списка клиентов</p>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">
-                                    <i class="fas fa-chart-bar me-2"></i>Статистика продаж
-                                </h6>
-                            </div>
-                            <p class="mb-1 small text-muted">Анализ продаж и отчеты</p>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        
-        <div class="col-md-6 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Последние заказы</h5>
-                </div>
-                <div class="card-body p-0">
-                    {% if recent_orders %}
-                        <div class="list-group list-group-flush">
-                            {% for order in recent_orders %}
-                                <div class="list-group-item">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <h6 class="mb-1">Заказ #{{ order.id }}</h6>
-                                        <small>{{ order.created_at|date:"d.m.Y H:i" }}</small>
-                                    </div>
-                                    <p class="mb-1">
-                                        {% if order.user %}
-                                            {{ order.user.get_full_name|default:order.user.email }}
-                                        {% else %}
-                                            Гость
-                                        {% endif %}
-                                    </p>
-                                    <div class="d-flex justify-content-between">
-                                        <small class="text-muted">{{ order.total_price }} ₽</small>
-                                        <span class="badge 
-                                            {% if order.status == 'completed' %}bg-success
-                                            {% elif order.status == 'processing' %}bg-primary
-                                            {% elif order.status == 'cancelled' %}bg-danger
-                                            {% else %}bg-secondary{% endif %}">
-                                            {{ order.get_status_display }}
-                                        </span>
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="icon-md bg-primary bg-opacity-10  rounded-circle">
+                                        <i class="fas fa-info"></i>
                                     </div>
                                 </div>
-                            {% endfor %}
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="fw-bold mb-2">Статусы заказов</h6>
+                                    <p class="small text-muted mb-0">
+                                        <span class="badge bg-primary">Обработка</span> — новый заказ<br>
+                                        <span class="badge bg-info">Доставляется</span> — отправлен клиенту<br>
+                                        <span class="badge bg-success">Выполнен</span> — завершенный<br>
+                                        <span class="badge bg-danger">Отменен</span> — отмененный
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                    {% else %}
-                        <div class="text-center py-4">
-                            <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
-                            <p class="text-muted">Заказов пока нет</p>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="icon-md bg-warning bg-opacity-10 text-warning rounded-circle">
+                                        <i class="fas fa-bell"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="fw-bold mb-2">Уведомления</h6>
+                                    <p class="small text-muted mb-0">
+                                        • Проверяйте новые заказы каждый час<br>
+                                        • Отвечайте на вопросы в течение 24 часов<br>
+                                        • Обновляйте статусы своевременно
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                    {% endif %}
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="icon-md bg-success bg-opacity-10 text-success rounded-circle">
+                                        <i class="fas fa-phone"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="fw-bold mb-2">Поддержка</h6>
+                                    <p class="small text-muted mb-0">
+                                        Техническая поддержка:<br>
+                                        <i class="fas fa-envelope me-1"></i> support@gearlock.ru<br>
+                                        <i class="fas fa-phone me-1"></i> +7 (999) 123-45-67<br>
+                                        График: Пн-Пт 9:00-18:00
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-footer">
-                    <a href="{% url 'orders:all_orders' %}" class="btn btn-sm btn-outline-primary">
-                        Все заказы <i class="fas fa-arrow-right ms-1"></i>
-                    </a>
+                <div class="card-footer bg-light border-0">
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'users:dashboard' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> На главный дашборд
+                        </a>
+                        <button onclick="window.print()" class="btn btn-outline-primary">
+                            <i class="fas fa-print me-2"></i> Печать отчета
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    
-    <div class="row mt-3">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Полезная информация</h5>
+
+<div class="modal fade" id="statsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">
+                    <i class="fas fa-chart-bar text-success me-2"></i>
+                    Статистика продаж
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                
+                <div class="text-center py-5">
+                    <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">Графики статистики загружаются...</p>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0">
-                                    <i class="fas fa-info-circle fa-2x text-primary"></i>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6>Статусы заказов</h6>
-                                    <p class="small mb-0">
-                                        <span class="badge bg-primary">Обработка</span> - новый заказ<br>
-                                        <span class="badge bg-success">Выполнен</span> - завершенный заказ<br>
-                                        <span class="badge bg-danger">Отменен</span> - отмененный заказ
-                                    </p>
-                                </div>
-                            </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    Закрыть
+                </button>
+                <button type="button" class="btn btn-success">
+                    <i class="fas fa-download me-2"></i> Экспорт данных
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="revenueModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">
+                    <i class="fas fa-ruble-sign text-warning me-2"></i>
+                    Анализ выручки
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <h6 class="fw-bold">Выручка по месяцам</h6>
+                    <div class="small text-muted mb-2">Последние 3 месяца</div>
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Текущий месяц</span>
+                            <span class="fw-bold text-success">{{ current_month_revenue|default:"0" }} ₽</span>
                         </div>
-                        <div class="col-md-4">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0">
-                                    <i class="fas fa-bell fa-2x text-warning"></i>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6>Уведомления</h6>
-                                    <p class="small mb-0">
-                                        Проверяйте новые заказы регулярно.<br>
-                                        Отвечайте на вопросы клиентов в течение 24 часов.
-                                    </p>
-                                </div>
-                            </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Прошлый месяц</span>
+                            <span class="fw-bold text-primary">{{ last_month_revenue|default:"0" }} ₽</span>
                         </div>
-                        <div class="col-md-4">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0">
-                                    <i class="fas fa-phone fa-2x text-success"></i>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6>Поддержка</h6>
-                                    <p class="small mb-0">
-                                        Техническая поддержка:<br>
-                                        support@gearlock.ru<br>
-                                        +7 (XXX) XXX-XX-XX
-                                    </p>
-                                </div>
-                            </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>2 месяца назад</span>
+                            <span class="fw-bold text-secondary">{{ two_months_ago_revenue|default:"0" }} ₽</span>
                         </div>
                     </div>
                 </div>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <small>Данные обновляются ежедневно в 00:00</small>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Закрыть
+                </button>
             </div>
         </div>
     </div>

@@ -79,74 +79,9 @@
                                                        title="Написать email">
                                                         <i class="fas fa-envelope"></i>
                                                     </a>
-                                                    <a href="#" 
-                                                       class="btn btn-outline-info" 
-                                                       title="Просмотреть профиль"
-                                                       data-bs-toggle="modal" 
-                                                       data-bs-target="#customerModal{{ customer.id }}">
-                                                        <i class="fas fa-eye"></i>
-                                                    </a>
                                                 </div>
                                                 
                                                 
-                                                <div class="modal fade" id="customerModal{{ customer.id }}" tabindex="-1">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title">Информация о клиенте</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <div class="row">
-                                                                    <div class="col-md-4 text-center">
-                                                                        <div class="mb-3">
-                                                                            <i class="fas fa-user-circle fa-5x text-primary"></i>
-                                                                        </div>
-                                                                        <h6>{{ customer.get_full_name|default:customer.username }}</h6>
-                                                                    </div>
-                                                                    <div class="col-md-8">
-                                                                        <p><strong>Email:</strong> {{ customer.email }}</p>
-                                                                        <p><strong>Телефон:</strong> 
-                                                                            {% if customer.phone %}
-                                                                                {{ customer.phone }}
-                                                                            {% else %}
-                                                                                не указан
-                                                                            {% endif %}
-                                                                        </p>
-                                                                        <p><strong>Дата регистрации:</strong> 
-                                                                            {{ customer.date_joined|date:"d.m.Y H:i" }}
-                                                                        </p>
-                                                                        <p><strong>Последний вход:</strong> 
-                                                                            {% if customer.last_login %}
-                                                                                {{ customer.last_login|date:"d.m.Y H:i" }}
-                                                                            {% else %}
-                                                                                никогда
-                                                                            {% endif %}
-                                                                        </p>
-                                                                        <p>
-                                                                            <strong>Статус:</strong>
-                                                                            <span class="badge 
-                                                                                {% if customer.is_active %}bg-success
-                                                                                {% else %}bg-danger{% endif %}">
-                                                                                {% if customer.is_active %}
-                                                                                    Активен
-                                                                                {% else %}
-                                                                                    Неактивен
-                                                                                {% endif %}
-                                                                            </span>
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                                                                <a href="mailto:{{ customer.email }}" class="btn btn-primary">
-                                                                    <i class="fas fa-envelope me-1"></i>Написать
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </td>
                                         </tr>
                                     {% endfor %}

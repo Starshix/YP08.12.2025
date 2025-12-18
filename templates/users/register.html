@@ -1,72 +1,188 @@
+
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
 {% block title %}Регистрация - GearLock{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header bg-success text-white">
-                <h4 class="mb-0">Регистрация нового пользователя</h4>
-            </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form.email|as_crispy_field }}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-primary-gradient text-white py-4">
+                    <div class="text-center">
+                        <div class="icon-lg bg-white text-about rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
+                            <i class="fas fa-user-plus fs-3"></i>
                         </div>
-                        <div class="col-md-6">
-                            {{ form.username|as_crispy_field }}
+                        <h1 class="h3 fw-bold mb-1">Присоединяйтесь к GearLock</h1>
+                        <p class="mb-0 opacity-90">Создайте аккаунт и получите доступ ко всем преимуществам</p>
+                    </div>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="row g-3">
+                            
+                            <div class="row">
+                                    <div class="col-md-6">
+                                        {{ form.email|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.username|as_crispy_field }}
+                                    </div>
+                            </div>
+                            
+                            
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form.first_name|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.last_name|as_crispy_field }}
+                                </div>
+                            </div>
+                            
+                    
+                            <div class="mb-3">
+                                {{ form.phone|as_crispy_field }}
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form.password1|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.password2|as_crispy_field }}
+                                </div>
+                            </div>
+                            
+                            
+                            <div class="col-12">
+                                <div class="card border-0 bg-light mb-3">
+                                    <div class="card-body">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="terms" required>
+                                            <label class="form-check-label small" for="terms">
+                                                Я согласен с <a href="#" class="text-decoration-none text-about">правилами сайта</a> 
+                                                и <a href="#" class="text-decoration-none text-about">политикой конфиденциальности</a>
+                                            </label>
+                                            <div class="invalid-feedback">
+                                                Необходимо принять условия использования.
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input" type="checkbox" id="newsletter">
+                                            <label class="form-check-label small" for="newsletter">
+                                                Я хочу получать новости о скидках, акциях и новых товарах
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary btn-lg w-100 py-3">
+                                    <i class="fas fa-user-plus me-2"></i>
+                                    Создать аккаунт
+                                </button>
+                            </div>
+                            
+                            
+                            <div class="col-12 text-center mt-4">
+                                <p class="mb-0 text-muted">
+                                    Уже есть аккаунт? 
+                                    <a href="{% url 'users:login' %}" class="text-decoration-none fw-bold text-about">
+                                        Войти здесь
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    
+                    <div class="mt-4 pt-4 border-top">
+                        <div class="text-center mb-3">
+                            <span class="text-muted">Или войдите с помощью</span>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-outline-about">
+                                <i class="fab fa-google me-2"></i>
+                                Продолжить с Google
+                            </button>
                         </div>
                     </div>
                     
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form.first_name|as_crispy_field }}
+                    
+                    <div class="row mt-5">
+                        <div class="col-md-4 text-center mb-3">
+                            <div class="icon-md bg-primary bg-opacity-10  rounded-circle d-inline-flex align-items-center justify-content-center mb-2">
+                                <i class="fas fa-shipping-fast"></i>
+                            </div>
+                            <h6 class="fw-bold">Бесплатная доставка</h6>
+                            <p class="small text-muted mb-0">При заказе от 3000 ₽</p>
                         </div>
-                        <div class="col-md-6">
-                            {{ form.last_name|as_crispy_field }}
+                        <div class="col-md-4 text-center mb-3">
+                            <div class="icon-md bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-2">
+                                <i class="fas fa-award"></i>
+                            </div>
+                            <h6 class="fw-bold">Гарантия качества</h6>
+                            <p class="small text-muted mb-0">На все товары</p>
+                        </div>
+                        <div class="col-md-4 text-center mb-3">
+                            <div class="icon-md bg-warning bg-opacity-10 text-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-2">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <h6 class="fw-bold">Скидки</h6>
+                            <p class="small text-muted mb-0">Для зарегистрированных</p>
                         </div>
                     </div>
-                    
-                    <div class="mb-3">
-                        {{ form.phone|as_crispy_field }}
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form.password1|as_crispy_field }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ form.password2|as_crispy_field }}
-                        </div>
-                    </div>
-                    
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="terms" required>
-                        <label class="form-check-label" for="terms">
-                            Я согласен с <a href="#" class="text-decoration-none">правилами сайта</a> и 
-                            <a href="#" class="text-decoration-none">политикой конфиденциальности</a>
-                        </label>
-                    </div>
-                    
-                    <div class="d-grid mt-3">
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-user-plus"></i> Зарегистрироваться
-                        </button>
-                    </div>
-                    
-                    <div class="text-center mt-3">
-                        <a href="{% url 'users:login' %}" class="text-decoration-none">
-                            Уже есть аккаунт? Войти
-                        </a>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+// Валидация формы
+(function () {
+    'use strict'
+    const forms = document.querySelectorAll('.needs-validation')
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
+
+// Переключение видимости пароля
+document.getElementById('togglePassword1').addEventListener('click', function() {
+    const passwordInput = this.parentElement.querySelector('input')
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password'
+    passwordInput.setAttribute('type', type)
+    this.querySelector('i').classList.toggle('fa-eye')
+    this.querySelector('i').classList.toggle('fa-eye-slash')
+})
+
+document.getElementById('togglePassword2').addEventListener('click', function() {
+    const passwordInput = this.parentElement.querySelector('input')
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password'
+    passwordInput.setAttribute('type', type)
+    this.querySelector('i').classList.toggle('fa-eye')
+    this.querySelector('i').classList.toggle('fa-eye-slash')
+})
+</script>
 {% endblock %}
+
+
+                    
+
+
+                    

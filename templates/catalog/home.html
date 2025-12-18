@@ -2,137 +2,406 @@
 
 {% block title %}GearLock - Главная{% endblock %}
 
+{% block extra_css %}
+{% endblock %}
+
 {% block content %}
 
-<div id="carouselExampleIndicators" class="carousel slide mb-4" data-bs-ride="carousel">
-    <div class="carousel-indicators">
-        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></button>
-        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></button>
-        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></button>
+<section class="hero-section">
+    <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="2"></button>
+        </div>
+        
+        <div class="carousel-inner">
+            
+            <div class="carousel-item active">
+                <div class="hero-slide" style="background-image: url('/static/images/avtoacc.webp')">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-content">
+                        <h1 class="hero-title">Автоаксессуары премиум-класса</h1>
+                        <p class="hero-subtitle">Все для комфорта и безопасности вашего автомобиля. Оригинальные товары с гарантией качества.</p>
+                        <a href="{% url 'catalog:product_list' %}" class="hero-btn">
+                            <i class="fas fa-shopping-cart"></i>
+                            В каталог
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div class="carousel-item">
+                <div class="hero-slide" style="background-image: url('/static/images/skidki.jpg'">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-content">
+                        <h1 class="hero-title">Скидки до 30%</h1>
+                        <p class="hero-subtitle">Специальные предложения на популярные товары. Успейте купить по лучшей цене!</p>
+                        <a href="#sale-section" class="hero-btn">
+                            <i class="fas fa-tag"></i>
+                            Смотреть акции
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div class="carousel-item">
+                <div class="hero-slide" style="background-image: url('/static/images/dostavka.jpg')">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-content">
+                        <h1 class="hero-title">Бесплатная доставка</h1>
+                        <p class="hero-subtitle">При заказе от 3000₽ по всей России. Быстрая доставка и удобная оплата.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+            <i class="fas fa-chevron-left fa-2x"></i>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+            <i class="fas fa-chevron-right fa-2x"></i>
+        </button>
     </div>
-    <div class="carousel-inner rounded">
-        <div class="carousel-item active">
-            <img src="https://autogur73.ru/images/abt__ut2/banners/all/31/4025138149.webp" class="d-block w-100" alt="...">
-        </div>
-        <div class="carousel-item">
-            <img src="https://autogur73.ru/images/abt__ut2/banners/all/31/2577587112.webp" class="d-block w-100" alt="...">
-        </div>
-        <div class="carousel-item">
-            <img src="https://autogur73.ru/images/abt__ut2/banners/all/31/921899033.webp" class="d-block w-100" alt="...">
-        </div>
-    </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon"></span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-        <span class="carousel-control-next-icon"></span>
-    </button>
-</div>
+</section>
 
 
-<h2 class="mb-4">Категории товаров</h2>
-<div class="row mb-5">
-    {% for category in categories %}
-    <div class="col-md-4 mb-3">
-        <div class="card h-100">
-            <div class="card-body text-center">
-                <h5 class="card-title">{{ category.name }}</h5>
-                <p class="card-text">{{ category.description|truncatewords:20 }}</p>
-                <a href="{% url 'catalog:product_list_by_category' category.slug %}" class="btn btn-primary">
-                    Смотреть товары
+<section class="features-section mb-5">
+    <div class="container">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shipping-fast"></i>
+                </div>
+                <div class="feature-content">
+                    <h4>Быстрая доставка</h4>
+                    <p>Доставляем по России за 3-7 дней</p>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="feature-content">
+                    <h4>Гарантия 1 год</h4>
+                    <p>На все товары в нашем магазине</p>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <div class="feature-content">
+                    <h4>Оплата при получении</h4>
+                    <p>Наличными или картой</p>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <div class="feature-content">
+                    <h4>Поддержка 24/7</h4>
+                    <p>Консультации и помощь в выборе</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="categories-section mb-5">
+    <div class="container">
+        <div class="section-header mb-4">
+            <h2 class="section-title">Категории товаров</h2>
+            <p class="section-subtitle">Выберите нужную категорию для просмотра товаров</p>
+        </div>
+        
+        <div class="categories-grid">
+            {% for category in categories %}
+            <a href="{% url 'catalog:product_list_by_category' category.slug %}" class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-{{ category.icon|default:'car' }}"></i>
+                </div>
+                <div class="category-content">
+                    <h3 class="category-title">{{ category.name }}</h3>
+                    <p class="category-description">{{ category.description|truncatewords:15 }}</p>
+                    <span class="category-link">
+                        Смотреть товары
+                        <i class="fas fa-arrow-right"></i>
+                    </span>
+                </div>
+            </a>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="text-muted">Категории появятся скоро!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+<section class="products-section mb-5">
+    <div class="container">
+        <div class="section-header mb-4">
+            <h2 class="section-title">Популярные товары</h2>
+            <p class="section-subtitle">Самые востребованные товары среди наших клиентов</p>
+            <a href="{% url 'catalog:product_list' %}?sort=popular" class="view-all-link">
+                Все популярные
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        
+        <div class="products-grid">
+            {% for product in featured_products %}
+            <div class="product-card">
+                <div class="product-badge popular">
+                    <i class="fas fa-fire"></i>
+                    Популярный
+                </div>
+                <div class="product-image">
+                    {% if product.main_image %}
+                        <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300x200?text=GearLock" alt="{{ product.name }}">
+                    {% endif %}
+                </div>
+                <div class="product-content">
+                    <span class="product-category">{{ product.category.name }}</span>
+                    <h3 class="product-title">{{ product.name|truncatewords:6 }}</h3>
+                    <p class="product-description">{{ product.short_description|truncatewords:10 }}</p>
+                    
+                    <div class="product-rating">
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <span class="rating-count">({{ product.rating|default:'4.5' }})</span>
+                    </div>
+                    
+                    <div class="product-footer">
+                        <div class="product-price">
+                            {% if product.old_price %}
+                            <span class="old-price">{{ product.old_price }} ₽</span>
+                            {% endif %}
+                            <span class="current-price">{{ product.price }} ₽</span>
+                        </div>
+                        <div class="product-actions">
+                            <a href="{% url 'catalog:product_detail' product.slug %}" class="btn-details">
+                                Подробнее
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="empty-state">
+                    <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                    <h4>Популярные товары появятся скоро!</h4>
+                    <p>Как только товары появятся, они отобразятся здесь</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+<section class="products-section mb-5">
+    <div class="container">
+        <div class="section-header mb-4">
+            <h2 class="section-title">Новинки</h2>
+            <p class="section-subtitle">Самые свежие поступления в нашем каталоге</p>
+            <a href="{% url 'catalog:product_list' %}?sort=new" class="view-all-link">
+                Все новинки
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        
+        <div class="products-grid">
+            {% for product in new_products %}
+            <div class="product-card">
+                <div class="product-badge new">
+                    <i class="fas fa-certificate"></i>
+                    Новинка
+                </div>
+                <div class="product-image">
+                    {% if product.main_image %}
+                        <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300x200?text=GearLock" alt="{{ product.name }}">
+                    {% endif %}
+                </div>
+                <div class="product-content">
+                    <span class="product-category">{{ product.category.name }}</span>
+                    <h3 class="product-title">{{ product.name|truncatewords:6 }}</h3>
+                    <p class="product-description">{{ product.short_description|truncatewords:10 }}</p>
+                    
+                    <div class="product-footer">
+                        <div class="product-price">
+                            <span class="current-price">{{ product.price }} ₽</span>
+                        </div>
+                        <div class="product-actions">
+                            <a href="{% url 'catalog:product_detail' product.slug %}" class="btn-details">
+                                Подробнее
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="empty-state">
+                    <i class="fas fa-gift fa-3x text-muted mb-3"></i>
+                    <h4>Новинки появятся скоро!</h4>
+                    <p>Следите за обновлениями в нашем каталоге</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+<section class="products-section mb-5" id="sale-section">
+    <div class="container">
+        <div class="section-header mb-4">
+            <h2 class="section-title">Акции и скидки</h2>
+            <p class="section-subtitle">Специальные предложения и выгодные цены</p>
+            <a href="{% url 'catalog:product_list' %}?on_sale=true" class="view-all-link">
+                Все акции
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        
+        <div class="products-grid">
+            {% for product in sale_products %}
+            <div class="product-card">
+                <div class="product-badge sale">
+                    <i class="fas fa-tag"></i>
+                    -{{ product.discount_percent|default:"20" }}%
+                </div>
+                <div class="product-image">
+
+                <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+
+                </div>
+                <div class="product-content">
+                    <span class="product-category">{{ product.category.name }}</span>
+                    <h3 class="product-title">{{ product.name|truncatewords:6 }}</h3>
+                    <p class="product-description">{{ product.short_description|truncatewords:10 }}</p>
+                    
+                    <div class="product-footer">
+                        <div class="product-price">
+                            <span class="old-price">{{ product.old_price }} ₽</span>
+                            <span class="current-price">{{ product.price }} ₽</span>
+                        </div>
+                        <div class="product-actions">
+                            <a href="{% url 'catalog:product_detail' product.slug %}" class="btn-details">
+                                Подробнее
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="empty-state">
+                    <i class="fas fa-percentage fa-3x text-muted mb-3"></i>
+                    <h4>Акционные товары появятся скоро!</h4>
+                    <p>Следите за нашими специальными предложениями</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+<section class="about-section mb-5">
+    <div class="container">
+        <div class="about-card">
+            <div class="about-content">
+                <h2 class="about-title">Почему выбирают GearLock?</h2>
+                <div class="about-features">
+                    <div class="about-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h4>Гарантия качества</h4>
+                            <p>Все товары проходят строгий контроль качества перед отправкой</p>
+                        </div>
+                    </div>
+                    <div class="about-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h4>Широкий ассортимент</h4>
+                            <p>Более 1000 товаров для всех марок автомобилей</p>
+                        </div>
+                    </div>
+                    <div class="about-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h4>Профессиональная поддержка</h4>
+                            <p>Консультации от экспертов с опытом работы более 10 лет</p>
+                        </div>
+                    </div>
+                </div>
+                <a href="{% url 'pages:about' %}" class="btn-about">
+                    Узнать больше о компании
+                    <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
-        </div>
-    </div>
-    {% endfor %}
-</div>
-
-
-<h2 class="mb-4">Популярные товары</h2>
-<div class="row mb-5">
-    {% for product in featured_products %}
-    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-        <div class="card h-100">
-            {% if product.main_image %}
-                <img src="{{ product.main_image.url }}" class="card-img-top" alt="{{ product.name }}">
-            {% else %}
-                <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="{{ product.name }}">
-            {% endif %}
-            <div class="card-body">
-                <h6 class="card-title">{{ product.name|truncatewords:8 }}</h6>
-                <p class="card-text">
-                    {% if product.old_price %}
-                        <span class="text-muted text-decoration-line-through">{{ product.old_price }} ₽</span>
-                        <br>
-                    {% endif %}
-                    <strong>{{ product.price }} ₽</strong>
-                </p>
-                <a href="{% url 'catalog:product_detail' product.slug %}" class="btn btn-outline-primary btn-sm">Подробнее</a>
+            <div class="about-image">
+                <img src="/static/images/mehanic.avif" alt="О компании GearLock">
             </div>
         </div>
     </div>
-    {% empty %}
-    <div class="col-12">
-        <p class="text-center">Популярные товары появятся скоро!</p>
-    </div>
-    {% endfor %}
-</div>
+</section>
 
 
-<h2 class="mb-4">Новинки</h2>
-<div class="row mb-5">
-    {% for product in new_products %}
-    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-        <div class="card h-100">
-            {% if product.main_image %}
-                <img src="{{ product.main_image.url }}" class="card-img-top" alt="{{ product.name }}">
-            {% else %}
-                <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="{{ product.name }}">
-            {% endif %}
-            <div class="card-body">
-                <span class="badge bg-success mb-2">Новинка</span>
-                <h6 class="card-title">{{ product.name|truncatewords:8 }}</h6>
-                <p class="card-text">
-                    <strong>{{ product.price }} ₽</strong>
-                </p>
-                <a href="{% url 'catalog:product_detail' product.slug %}" class="btn btn-outline-success btn-sm">Подробнее</a>
-            </div>
-        </div>
-    </div>
-    {% empty %}
-    <div class="col-12">
-        <p class="text-center">Новинки появятся скоро!</p>
-    </div>
-    {% endfor %}
-</div>
+{% endblock %}
 
-
-<h2 class="mb-4">Акции</h2>
-<div class="row">
-    {% for product in sale_products %}
-    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-        <div class="card h-100">
-            {% if product.main_image %}
-                <img src="{{ product.main_image.url }}" class="card-img-top" alt="{{ product.name }}">
-            {% else %}
-                <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="{{ product.name }}">
-            {% endif %}
-            <div class="card-body">
-                <span class="badge bg-danger mb-2">-{{ product.discount_percent }}%</span>
-                <h6 class="card-title">{{ product.name|truncatewords:8 }}</h6>
-                <p class="card-text">
-                    <span class="text-muted text-decoration-line-through">{{ product.old_price }} ₽</span>
-                    <br>
-                    <strong>{{ product.price }} ₽</strong>
-                </p>
-                <a href="{% url 'catalog:product_detail' product.slug %}" class="btn btn-outline-danger btn-sm">Подробнее</a>
-            </div>
-        </div>
-    </div>
-    {% empty %}
-    <div class="col-12">
-        <p class="text-center">Акционные товары появятся скоро!</p>
-    </div>
-    {% endfor %}
-</div>
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Инициализация карусели
+    const carousel = new bootstrap.Carousel(document.getElementById('mainCarousel'), {
+        interval: 5000,
+        wrap: true
+    });
+    
+    
+    // Анимация появления элементов при скролле
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    
+    // Наблюдаем за карточками товаров
+    document.querySelectorAll('.product-card, .category-card, .feature-card').forEach(card => {
+        card.classList.add('animate-on-scroll');
+        observer.observe(card);
+    });
+});
+</script>
 {% endblock %}

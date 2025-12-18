@@ -1,213 +1,445 @@
-
 {% extends 'base.html' %}
 
 {% block title %}Панель управления - GearLock{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container py-4">
+    
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-primary-gradient text-white py-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-lg bg-white text-about rounded-3 me-3">
+                                <i class="fas fa-tachometer-alt fs-3"></i>
+                            </div>
+                            <div>
+                                <h1 class="h3 fw-bold mb-1">Панель управления</h1>
+                                <p class="mb-0 opacity-90">Добро пожаловать, {{ user.first_name|default:user.username }}!</p>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="badge bg-white text-about">{{ user.role.get_name_display }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
-        <div class="col-md-3">
-            
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Панель управления</h5>
+        
+        <div class="col-lg-3 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-light border-0 py-3">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-bars text-about me-2"></i>
+                        Навигация
+                    </h5>
                 </div>
                 <div class="list-group list-group-flush">
                     {% if user.is_customer %}
-                        <a href="{% url 'users:dashboard' %}" class="list-group-item list-group-item-action active">
-                            <i class="fas fa-tachometer-alt me-2"></i>Обзор
+                        <a href="{% url 'users:dashboard' %}" 
+                           class="list-group-item list-group-item-action d-flex align-items-center {% if request.path == dashboard_url %}active{% endif %}">
+                            <div class="icon-sm bg-primary bg-opacity-10 rounded-circle me-3">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold">Обзор</div>
+                                <small class="text-muted">Главная страница</small>
+                            </div>
                         </a>
-                        <a href="{% url 'orders:order_list' %}" class="list-group-item list-group-item-action">
-                            <i class="fas fa-shopping-bag me-2"></i>Мои заказы
+                        
+                        <a href="{% url 'orders:order_list' %}" 
+                           class="list-group-item list-group-item-action d-flex align-items-center">
+                            <div class="icon-sm bg-primary bg-opacity-10  rounded-circle me-3">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold">Мои заказы</div>
+                                <small class="text-muted">История и статусы</small>
+                            </div>
                             {% if order_count > 0 %}
-                            <span class="badge bg-primary float-end">{{ order_count }}</span>
+                            <span class="badge bg-primary rounded-pill">{{ order_count }}</span>
                             {% endif %}
                         </a>
-                        <a href="{% url 'users:profile' %}" class="list-group-item list-group-item-action">
-                            <i class="fas fa-user me-2"></i>Профиль
+                        
+                        <a href="{% url 'users:profile' %}" 
+                           class="list-group-item list-group-item-action d-flex align-items-center">
+                            <div class="icon-sm bg-primary bg-opacity-10  rounded-circle me-3">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold">Профиль</div>
+                                <small class="text-muted">Личные данные</small>
+                            </div>
+                        </a>
+                        
+                        <a href="#" 
+                           class="list-group-item list-group-item-action d-flex align-items-center">
+                            <div class="icon-sm bg-primary bg-opacity-10  rounded-circle me-3">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold">Избранное</div>
+                                <small class="text-muted">Сохраненные товары</small>
+                            </div>
+                            {% if wishlist_count > 0 %}
+                            <span class="badge bg-primary rounded-pill">{{ wishlist_count }}</span>
+                            {% endif %}
                         </a>
                     {% endif %}
                     
                     {% if user.is_manager %}
-                        <a href="{% url 'users:manager_dashboard' %}" class="list-group-item list-group-item-action">
-                            <i class="fas fa-chart-line me-2"></i>Статистика продаж
+                        <a href="{% url 'users:manager_dashboard' %}" 
+                           class="list-group-item list-group-item-action d-flex align-items-center">
+                            <div class="icon-sm bg-success bg-opacity-10 text-success rounded-circle me-3">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold">Статистика продаж</div>
+                                <small class="text-muted">Панель менеджера</small>
+                            </div>
                         </a>
                     {% endif %}
                     
                     {% if user.is_content_manager %}
-                        <a href="{% url 'users:content_dashboard' %}" class="list-group-item list-group-item-action">
-                            <i class="fas fa-edit me-2"></i>Управление контентом
+                        <a href="{% url 'users:content_dashboard' %}" 
+                           class="list-group-item list-group-item-action d-flex align-items-center">
+                            <div class="icon-sm bg-warning bg-opacity-10 text-warning rounded-circle me-3">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold">Управление контентом</div>
+                                <small class="text-muted">Панель контент-менеджера</small>
+                            </div>
                         </a>
                     {% endif %}
                     
                     {% if user.is_admin_user or user.is_superuser %}
-                        <a href="/admin/" class="list-group-item list-group-item-action">
-                            <i class="fas fa-cogs me-2"></i>Админ-панель
+                        <a href="/admin/" 
+                           class="list-group-item list-group-item-action d-flex align-items-center">
+                            <div class="icon-sm bg-danger bg-opacity-10 text-danger rounded-circle me-3">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold">Админ-панель</div>
+                                <small class="text-muted">Полное управление</small>
+                            </div>
                         </a>
                     {% endif %}
+                </div>
+                <div class="card-footer bg-light border-0">
+                    <a href="{% url 'catalog:product_list' %}" class="btn btn-outline-about w-100">
+                        <i class="fas fa-store me-2"></i> Вернуться в магазин
+                    </a>
                 </div>
             </div>
         </div>
         
-        <div class="col-md-9">
+        
+        <div class="col-lg-9">
             
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="mb-0">
-                        {% if user.is_customer %}
-                            Личный кабинет покупателя
-                        {% elif user.is_manager %}
-                            Панель менеджера
-                        {% elif user.is_content_manager %}
-                            Панель контент-менеджера
-                        {% elif user.is_admin_user %}
-                            Панель администратора
-                        {% endif %}
-                    </h4>
-                </div>
+            <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body">
-                    {% if user.is_customer %}
-                        <h5>Добро пожаловать, {{ user.first_name|default:user.username }}!</h5>
-                        <p>Ваша роль: <span class="badge bg-primary">{{ user.role.get_name_display }}</span></p>
-                        
-                        <div class="row mt-4">
-                            <div class="col-md-6">
-                                <div class="card bg-primary text-white">
-                                    <div class="card-body">
-                                        <h6><i class="fas fa-shopping-bag me-2"></i>Мои заказы</h6>
-                                        <p class="display-6">{{ order_count|default:"0" }}</p>
-                                        <a href="{% url 'orders:order_list' %}" class="btn btn-light btn-sm">
-                                            Посмотреть все
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card bg-success text-white">
-                                    <div class="card-body">
-                                        <h6><i class="fas fa-heart me-2"></i>Избранное</h6>
-                                        <p class="display-6">{{ wishlist_count|default:"0" }}</p>
-                                        <a href="#" class="btn btn-light btn-sm">
-                                            Посмотреть
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="d-flex align-items-center">
+                        <div class="icon-lg 
+                            {% if user.is_customer %}bg-primary
+                            {% elif user.is_manager %}bg-success
+                            {% elif user.is_content_manager %}bg-warning
+                            {% else %}bg-danger{% endif %} 
+                            text-white rounded-3 me-3">
+                            <i class="fas 
+                                {% if user.is_customer %}fa-user
+                                {% elif user.is_manager %}fa-user-tie
+                                {% elif user.is_content_manager %}fa-user-edit
+                                {% else %}fa-user-shield{% endif %} 
+                                fs-3">
+                            </i>
                         </div>
-                        
-                        
-                        {% if recent_orders %}
-                        <div class="mt-4">
-                            <h5>Последние заказы</h5>
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>№</th>
-                                            <th>Дата</th>
-                                            <th>Сумма</th>
-                                            <th>Статус</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for order in recent_orders %}
-                                        <tr>
-                                            <td>#{{ order.id }}</td>
-                                            <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
-                                            <td>{{ order.total_price }} ₽</td>
-                                            <td>
-                                                <span class="badge 
-                                                    {% if order.status == 'completed' %}bg-success
-                                                    {% elif order.status == 'processing' %}bg-primary
-                                                    {% elif order.status == 'cancelled' %}bg-danger
-                                                    {% else %}bg-secondary{% endif %}">
-                                                    {{ order.get_status_display }}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <a href="{% url 'orders:order_detail' order.id %}" 
-                                                   class="btn btn-sm btn-outline-primary">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div>
+                            <h2 class="h4 fw-bold mb-1">
+                                {% if user.is_customer %}
+                                    Личный кабинет покупателя
+                                {% elif user.is_manager %}
+                                    Панель менеджера
+                                {% elif user.is_content_manager %}
+                                    Панель контент-менеджера
+                                {% elif user.is_admin_user %}
+                                    Панель администратора
+                                {% endif %}
+                            </h2>
+                            <p class="text-muted mb-0">
+                                Ваша роль: 
+                                <span class="badge 
+                                    {% if user.is_customer %}bg-primary
+                                    {% elif user.is_manager %}bg-success
+                                    {% elif user.is_content_manager %}bg-warning
+                                    {% else %}bg-danger{% endif %}">
+                                    {{ user.role.get_name_display }}
+                                </span>
+                            </p>
                         </div>
-                        {% endif %}
-                        
-                    {% elif user.is_manager %}
-                        <h5>Панель управления продажами</h5>
-                        <p>Ваша роль: <span class="badge bg-success">{{ user.role.get_name_display }}</span></p>
-                        
-                        
-                        <div class="row mt-4">
-                            <div class="col-md-3">
-                                <div class="card bg-primary text-white">
-                                    <div class="card-body text-center">
-                                        <h5 class="card-title">{{ total_orders|default:"0" }}</h5>
-                                        <p class="card-text">Всего заказов</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="card bg-success text-white">
-                                    <div class="card-body text-center">
-                                        <h5 class="card-title">{{ completed_orders|default:"0" }}</h5>
-                                        <p class="card-text">Выполнено</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="card bg-info text-white">
-                                    <div class="card-body text-center">
-                                        <h5 class="card-title">{{ total_customers|default:"0" }}</h5>
-                                        <p class="card-text">Клиентов</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="card bg-warning text-white">
-                                    <div class="card-body text-center">
-                                        <h5 class="card-title">{{ total_revenue|default:"0" }} ₽</h5>
-                                        <p class="card-text">Общая выручка</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="alert alert-info mt-4">
-                            <i class="fas fa-info-circle me-2"></i>
-                            У вас есть доступ к управлению заказами и клиентами.
-                        </div>
-                        
-                    {% elif user.is_content_manager %}
-                        <h5>Управление контентом</h5>
-                        <p>Ваша роль: <span class="badge bg-warning text-dark">{{ user.role.get_name_display }}</span></p>
-                        
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            У вас есть доступ к управлению товарами, категориями и контентом сайта.
-                        </div>
-                        
-                    {% elif user.is_admin_user or user.is_superuser %}
-                        <h5>Административная панель</h5>
-                        <p>Ваша роль: <span class="badge bg-danger">{{ user.role.get_name_display }}</span></p>
-                        
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            У вас есть полный доступ ко всем функциям системы.
-                        </div>
-                        
-                        <a href="/admin/" class="btn btn-primary">
-                            <i class="fas fa-cogs me-2"></i>Перейти в админ-панель
-                        </a>
-                    {% endif %}
+                    </div>
                 </div>
             </div>
+
+            {% if user.is_customer %}
+                
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-0 shadow-hover h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <div class="icon-xl bg-primary-gradient text-white rounded-circle">
+                                            <i class="fas fa-shopping-bag fs-3"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="text-muted text-uppercase mb-1">Мои заказы</h6>
+                                        <h2 class="fw-bold mb-0">{{ order_count|default:"0" }}</h2>
+                                        <small class="text-success">
+                                            {% if recent_orders %}Активен{% else %}Еще нет заказов{% endif %}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent border-0">
+                                <a href="{% url 'orders:order_list' %}" class="btn btn-sm btn-outline-primary w-100">
+                                    <i class="fas fa-eye me-1"></i> Посмотреть все
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-0 shadow-hover h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <div class="icon-xl bg-success-gradient text-white rounded-circle">
+                                            <i class="fas fa-heart fs-3"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="text-muted text-uppercase mb-1">Избранное</h6>
+                                        <h2 class="fw-bold mb-0">{{ wishlist_count|default:"0" }}</h2>
+                                        <small class="text-success">
+                                            {% if wishlist_count %}Сохранили{% else %}Добавьте товары{% endif %}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent border-0">
+                                <a href="#" class="btn btn-sm btn-outline-success w-100">
+                                    <i class="fas fa-list me-1"></i> Посмотреть
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                {% if recent_orders %}
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-light border-0 py-3">
+                        <h5 class="fw-bold mb-0">
+                            <i class="fas fa-history text-about me-2"></i>
+                            Последние заказы
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="border-0">№ заказа</th>
+                                        <th class="border-0">Дата</th>
+                                        <th class="border-0">Сумма</th>
+                                        <th class="border-0">Статус</th>
+                                        <th class="border-0">Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in recent_orders %}
+                                    <tr class="hover-row">
+                                        <td class="fw-bold">#{{ order.id }}</td>
+                                        <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
+                                        <td class="fw-bold text-about">{{ order.total_price }} ₽</td>
+                                        <td>
+                                            <span class="badge 
+                                                {% if order.status == 'completed' %}bg-success
+                                                {% elif order.status == 'processing' %}bg-primary
+                                                {% elif order.status == 'shipped' %}bg-info
+                                                {% elif order.status == 'cancelled' %}bg-danger
+                                                {% else %}bg-secondary{% endif %}">
+                                                {{ order.get_status_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'orders:order_detail' order.id %}" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye me-1"></i> Детали
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-light border-0">
+                        <a href="{% url 'orders:order_list' %}" class="btn btn-outline-about">
+                            <i class="fas fa-list me-1"></i> Все мои заказы
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+                
+                
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-light border-0 py-3">
+                        <h5 class="fw-bold mb-0">
+                            <i class="fas fa-star text-warning me-2"></i>
+                            Рекомендации для вас
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="text-center p-3 border rounded-3">
+                                    <div class="icon-lg bg-primary bg-opacity-10 rounded-circle mb-3 mx-auto">
+                                        <i class="fas fa-truck"></i>
+                                    </div>
+                                    <h6 class="fw-bold mb-2">Бесплатная доставка</h6>
+                                    <p class="small text-muted mb-0">При заказе от 3000 ₽</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center p-3 border rounded-3">
+                                    <div class="icon-lg bg-success bg-opacity-10 text-success rounded-circle mb-3 mx-auto">
+                                        <i class="fas fa-percentage"></i>
+                                    </div>
+                                    <h6 class="fw-bold mb-2">Скидка 10%</h6>
+                                    <p class="small text-muted mb-0">На первую покупку</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center p-3 border rounded-3">
+                                    <div class="icon-lg bg-warning bg-opacity-10 text-warning rounded-circle mb-3 mx-auto">
+                                        <i class="fas fa-headset"></i>
+                                    </div>
+                                    <h6 class="fw-bold mb-2">Поддержка 24/7</h6>
+                                    <p class="small text-muted mb-0">Помощь и консультации</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            {% elif user.is_manager %}
+                
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            У вас есть доступ к управлению заказами и клиентами. 
+                            <a href="{% url 'users:manager_dashboard' %}" class="alert-link">Перейти в панель менеджера</a>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-3 text-center mb-3">
+                                <div class="display-5 fw-bold text-primary">{{ total_orders|default:"0" }}</div>
+                                <div class="small text-muted">Всего заказов</div>
+                            </div>
+                            <div class="col-md-3 text-center mb-3">
+                                <div class="display-5 fw-bold text-success">{{ completed_orders|default:"0" }}</div>
+                                <div class="small text-muted">Выполнено</div>
+                            </div>
+                            <div class="col-md-3 text-center mb-3">
+                                <div class="display-5 fw-bold text-info">{{ total_customers|default:"0" }}</div>
+                                <div class="small text-muted">Клиентов</div>
+                            </div>
+                            <div class="col-md-3 text-center mb-3">
+                                <div class="display-5 fw-bold text-warning">{{ total_revenue|default:"0" }} ₽</div>
+                                <div class="small text-muted">Общая выручка</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            {% elif user.is_content_manager %}
+                
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-info-circle me-2"></i>
+                            У вас есть доступ к управлению товарами, категориями и контентом сайта. 
+                            <a href="{% url 'users:content_dashboard' %}" class="alert-link">Перейти в панель контент-менеджера</a>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="icon-lg bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-2">
+                                    <i class="fas fa-box"></i>
+                                </div>
+                                <div class="fw-bold">{{ stats.total_products|default:"0" }}</div>
+                                <div class="small text-muted">Товаров</div>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="icon-lg bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-2">
+                                    <i class="fas fa-tags"></i>
+                                </div>
+                                <div class="fw-bold">{{ stats.total_categories|default:"0" }}</div>
+                                <div class="small text-muted">Категорий</div>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="icon-lg bg-info bg-opacity-10 text-info rounded-circle d-inline-flex align-items-center justify-content-center mb-2">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="fw-bold">{{ stats.in_stock|default:"0" }}</div>
+                                <div class="small text-muted">В наличии</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            {% elif user.is_admin_user or user.is_superuser %}
+                
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="alert alert-danger">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            У вас есть полный доступ ко всем функциям системы. 
+                            <a href="/admin/" class="alert-link">Перейти в админ-панель</a>
+                        </div>
+                        
+                        <div class="d-grid gap-3 mt-4">
+                            <a href="/admin/" class="btn btn-danger btn-lg">
+                                <i class="fas fa-cogs me-2"></i>
+                                Админ-панель Django
+                            </a>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <a href="{% url 'users:manager_dashboard' %}" class="btn btn-outline-success w-100">
+                                        <i class="fas fa-chart-line me-2"></i>
+                                        Панель менеджера
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="{% url 'users:content_dashboard' %}" class="btn btn-outline-warning w-100">
+                                        <i class="fas fa-edit me-2"></i>
+                                        Панель контент-менеджера
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>

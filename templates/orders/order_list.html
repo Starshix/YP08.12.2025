@@ -3,49 +3,365 @@
 {% block title %}Мои заказы - GearLock{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Мои заказы</h1>
-
-{% if orders %}
-    <div class="table-responsive">
-        <table class="table table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>№ заказа</th>
-                    <th>Дата</th>
-                    <th>Статус</th>
-                    <th>Сумма</th>
-                    <th>Действия</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for order in orders %}
-                <tr>
-                    <td>#{{ order.id }}</td>
-                    <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
-                    <td>
-                        <span class="badge {{ order.get_status_display_class }}">
-                            {{ order.get_status_display }}
-                        </span>
-                    </td>
-                    <td>{{ order.total_price }} ₽</td>
-                    <td>
-                        <a href="{% url 'orders:order_detail' order.id %}" class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-eye"></i> Подробнее
+<div class="container mt-4 animate-on-scroll">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="fw-bold gradient-text mb-3">
+                <i class="fas fa-history me-3"></i>Мои заказы
+            </h1>
+            <p class="text-muted">История ваших покупок и текущие заказы</p>
+        </div>
+    </div>
+    
+    {% if orders %}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-light shadow-hover">
+                <div class="card-body text-center">
+                    <div class="icon-lg bg-primary-gradient text-white rounded-circle mx-auto mb-3">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <h5>{{ orders|length }}</h5>
+                    <p class="text-muted mb-0">Всего заказов</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-light shadow-hover">
+                <div class="card-body text-center">
+                    <div class="icon-lg bg-success-gradient text-white rounded-circle mx-auto mb-3">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h5>{{ completed_orders|default:"0" }}</h5>
+                    <p class="text-muted mb-0">Завершено</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-light shadow-hover">
+                <div class="card-body text-center">
+                    <div class="icon-lg bg-warning-gradient text-white rounded-circle mx-auto mb-3">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h5>{{ active_orders|default:"0" }}</h5>
+                    <p class="text-muted mb-0">В обработке</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-light shadow-hover">
+                <div class="card-body text-center">
+                    <div class="icon-lg bg-info-gradient text-white rounded-circle mx-auto mb-3">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <h5>{{ total_spent|default:"0" }} ₽</h5>
+                    <p class="text-muted mb-0">Всего потрачено</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card shadow-hover">
+        <div class="card-header bg-primary-gradient text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="fas fa-clipboard-list me-2"></i>Список заказов
+            </h5>
+            <div class="btn-group" role="group">
+                <button class="btn btn-sm btn-light" onclick="window.print()">
+                    <i class="fas fa-print me-1"></i> Печать
+                </button>
+                <button class="btn btn-sm btn-light" onclick="exportToCSV()">
+                    <i class="fas fa-file-export me-1"></i> Экспорт
+                </button>
+            </div>
+        </div>
+        
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover" id="ordersTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>№ заказа</th>
+                            <th>Дата</th>
+                            <th>Статус</th>
+                            <th>Сумма</th>
+                            <th>Товары</th>
+                            <th class="text-end">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr class="hover-row">
+                            <td>
+                                <strong class="text-primary">#{{ order.id }}</strong>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="fw-bold">{{ order.created_at|date:"d.m.Y" }}</span>
+                                    <small class="text-muted">{{ order.created_at|date:"H:i" }}</small>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge {{ order.get_status_display_class }} px-3 py-2">
+                                    <i class="fas 
+                                        {% if order.status == 'completed' %}fa-check-circle
+                                        {% elif order.status == 'processing' %}fa-spinner
+                                        {% elif order.status == 'shipped' %}fa-truck
+                                        {% elif order.status == 'cancelled' %}fa-times-circle
+                                        {% else %}fa-clock{% endif %} me-1">
+                                    </i>
+                                    {{ order.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="fw-bold fs-5">{{ order.total_price }} ₽</span>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    {% for item in order.items.all|slice:":3" %}
+                                    {% if item.product.main_image %}
+                                    <div class="product-thumbnail me-2" title="{{ item.product.name }}">
+                                        <img src="{{ item.product.main_image.url }}" 
+                                             alt="{{ item.product.name }}"
+                                             class="table-img">
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% if order.items.count > 3 %}
+                                    <span class="badge bg-secondary">+{{ order.items.count|add:"-3" }}</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="text-end">
+                                <div class="action-buttons">
+                                    <a href="{% url 'orders:order_detail' order.id %}" 
+                                       class="btn btn-sm btn-outline-primary"
+                                       title="Подробнее">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    {% if order.status == 'new' or order.status == 'processing' %}
+                                    <button class="btn btn-sm btn-outline-danger" 
+                                            onclick="confirmCancel('{{ order.id }}')"
+                                            title="Отменить заказ">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    {% endif %}
+                                    {% if order.status == 'completed' %}
+                                    <button class="btn btn-sm btn-outline-success"
+                                            onclick="alert('Свяжитесь с менеджером для возврата')"
+                                            title="Возврат товара">
+                                        <i class="fas fa-undo"></i>
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="card-footer bg-light">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Для возврата товара свяжитесь с нашим менеджером
+                    </small>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="{% url 'catalog:product_list' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-store me-2"></i> Продолжить покупки
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if orders.has_other_pages %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <nav aria-label="Навигация по страницам">
+                <ul class="pagination justify-content-center">
+                    {% if orders.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1" aria-label="Первая">
+                            <i class="fas fa-angle-double-left"></i>
                         </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ orders.previous_page_number }}" aria-label="Предыдущая">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for num in orders.paginator.page_range %}
+                    {% if orders.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                    {% elif num > orders.number|add:'-3' and num < orders.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                    
+                    {% if orders.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ orders.next_page_number }}" aria-label="Следующая">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ orders.paginator.num_pages }}" aria-label="Последняя">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
     </div>
-{% else %}
-    <div class="text-center py-5">
-        <i class="fas fa-box-open fa-5x text-muted mb-4"></i>
-        <h3>У вас пока нет заказов</h3>
-        <p class="mb-4">Сделайте свой первый заказ в нашем магазине!</p>
-        <a href="{% url 'catalog:product_list' %}" class="btn btn-primary btn-lg">
-            <i class="fas fa-store"></i> Перейти в каталог
-        </a>
+    {% endif %}
+    
+    {% else %}
+    <div class="card shadow-hover">
+        <div class="card-body text-center py-5">
+            <div class="empty-cart-icon mb-4">
+                <i class="fas fa-box-open fa-5x text-muted"></i>
+            </div>
+            <h3 class="fw-bold mb-3">У вас пока нет заказов</h3>
+            <p class="text-muted mb-4">Сделайте свой первый заказ в нашем магазине и он появится здесь!</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'catalog:product_list' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-store me-2"></i> Перейти в каталог
+                </a>
+                <a href="{% url 'catalog:category_list' %}" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-list me-2"></i> Посмотреть категории
+                </a>
+            </div>
+        </div>
     </div>
-{% endif %}
+    {% endif %}
+</div>
+
+<style>
+    .action-buttons {
+        display: flex;
+        gap: 5px;
+        justify-content: flex-end;
+    }
+    
+    .action-buttons .btn {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+    }
+    
+    .product-thumbnail {
+        position: relative;
+    }
+    
+    .product-thumbnail .table-img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .pagination .page-link {
+        border-radius: 8px;
+        margin: 0 3px;
+    }
+    
+    .pagination .page-item.active .page-link {
+        background: var(--primary-gradient);
+        border-color: transparent;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Анимация при загрузке
+        const animateElements = document.querySelectorAll('.animate-on-scroll');
+        animateElements.forEach(el => {
+            el.classList.add('animate-in');
+        });
+        
+        // Сортировка таблицы
+        const headers = document.querySelectorAll('#ordersTable th');
+        headers.forEach((header, index) => {
+            if (index < 5) { // Все колонки кроме действий
+                header.style.cursor = 'pointer';
+                header.addEventListener('click', function() {
+                    sortTable(index);
+                });
+            }
+        });
+    });
+    
+    function sortTable(column) {
+        const table = document.getElementById('ordersTable');
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        
+        rows.sort((a, b) => {
+            const aValue = a.children[column].textContent.trim();
+            const bValue = b.children[column].textContent.trim();
+            
+            // Для числовых значений
+            if (column === 0 || column === 3) {
+                return parseInt(aValue.replace(/[^\d]/g, '')) - parseInt(bValue.replace(/[^\d]/g, ''));
+            }
+            
+            // Для дат
+            if (column === 1) {
+                return new Date(aValue) - new Date(bValue);
+            }
+            
+            // Для текстовых значений
+            return aValue.localeCompare(bValue);
+        });
+        
+        // Очищаем и добавляем отсортированные строки
+        rows.forEach(row => tbody.appendChild(row));
+    }
+    
+    function confirmCancel(orderId) {
+        if (confirm('Вы уверены, что хотите отменить заказ #' + orderId + '?')) {
+            // Здесь будет AJAX запрос на отмену заказа
+            alert('Запрос на отмену заказа отправлен. Менеджер свяжется с вами.');
+        }
+    }
+    
+    function exportToCSV() {
+        const rows = document.querySelectorAll('#ordersTable tbody tr');
+        let csv = 'Номер заказа,Дата,Статус,Сумма\n';
+        
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const orderNum = cells[0].textContent.trim();
+            const date = cells[1].textContent.trim();
+            const status = cells[2].textContent.trim();
+            const amount = cells[3].textContent.trim();
+            
+            csv += `"${orderNum}","${date}","${status}","${amount}"\n`;
+        });
+        
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'my_orders.csv';
+        a.click();
+    }
+</script>
 {% endblock %}

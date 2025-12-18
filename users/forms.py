@@ -37,7 +37,7 @@ class UserRegistrationForm(UserCreationForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         
-        # Автоматически назначаем роль "Покупатель" при регистрации
+
         if not user.role:
             from .models import Role
             try:
@@ -51,7 +51,7 @@ class UserRegistrationForm(UserCreationForm):
         
         return user
 
-# Остальные формы остаются без изменений...
+
 
 class UserLoginForm(AuthenticationForm):
     username = forms.CharField(
@@ -67,10 +67,10 @@ class UserLoginForm(AuthenticationForm):
         password = self.cleaned_data.get('password')
         
         if email and password:
-            # Ищем пользователя по email
+
             try:
                 user = User.objects.get(email=email)
-                # Проверяем пароль
+
                 if not user.check_password(password):
                     raise forms.ValidationError('Неверный пароль')
             except User.DoesNotExist:

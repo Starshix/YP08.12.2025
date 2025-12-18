@@ -4,72 +4,149 @@
 {% block title %}Контакты - GearLock{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-6">
-        <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">Свяжитесь с нами</h4>
-            </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form|crispy }}
-                    
-                    <div class="d-grid mt-3">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-paper-plane"></i> Отправить сообщение
-                        </button>
-                    </div>
-                </form>
+<div class="container py-4">
+    
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex align-items-center mb-3">
+                <div class="icon-lg bg-primary-gradient rounded-3 d-flex align-items-center justify-content-center me-3">
+                    <i class="fas fa-phone-alt text-white fs-3"></i>
+                </div>
+                <div>
+                    <h1 class="fw-bold mb-1">Контакты</h1>
+                    <p class="text-muted">Свяжитесь с нами любым удобным способом</p>
+                </div>
             </div>
         </div>
     </div>
-    
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-info text-white">
-                <h4 class="mb-0">Контактная информация</h4>
+
+    <div class="row g-4">
+        
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary-gradient text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-paper-plane me-2"></i>Форма обратной связи</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Имя *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">
+                                        <i class="fas fa-user text-primary"></i>
+                                    </span>
+                                    <input type="text" class="form-control" name="name" required>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Email *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">
+                                        <i class="fas fa-envelope text-primary"></i>
+                                    </span>
+                                    <input type="email" class="form-control" name="email" required>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Тема *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">
+                                        <i class="fas fa-tag text-primary"></i>
+                                    </span>
+                                    <input type="text" class="form-control" name="subject" required>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Сообщение *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light align-items-start">
+                                        <i class="fas fa-comment text-primary mt-1"></i>
+                                    </span>
+                                    <textarea class="form-control" rows="4" name="message" required></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="agree" required>
+                                    <label class="form-check-label small" for="agree">
+                                        Согласен с обработкой персональных данных
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 mt-3">
+                                <button type="submit" class="btn btn-primary w-100 py-3">
+                                    <i class="fas fa-paper-plane me-2"></i>
+                                    Отправить сообщение
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="card-body">
-                <h5>Адрес</h5>
-                <p>
-                    <i class="fas fa-map-marker-alt me-2"></i>
-                    г. Ульчновск, ул. Пушкина, д. 1
-                </p>
-                
-                <h5 class="mt-4">Телефоны</h5>
-                <p>
-                    <i class="fas fa-phone me-2"></i>
-                    +7 (999) 123-45-67<br>
-                </p>
-                
-                <h5 class="mt-4">Email</h5>
-                <p>
-                    <i class="fas fa-envelope me-2"></i>
-                    info@gearlock.ru<br>
-                    <i class="fas fa-envelope me-2"></i>
-                    support@gearlock.ru
-                </p>
-                
-                <h5 class="mt-4">Режим работы</h5>
-                <p>
-                    <i class="fas fa-clock me-2"></i>
-                    Пн-Пт: 9:00 - 20:00<br>
-                    <i class="fas fa-clock me-2"></i>
-                    Сб-Вс: 10:00 - 18:00
-                </p>
-                
-                <h5 class="mt-4">Мы в соцсетях</h5>
-                <div class="mt-2">
-                    <a href="#" class="btn btn-outline-primary me-2">
-                        <i class="fab fa-vk"></i> ВКонтакте
-                    </a>
-                    <a href="#" class="btn btn-outline-info me-2">
-                        <i class="fab fa-telegram"></i> Telegram
-                    </a>
-                    <a href="#" class="btn btn-outline-danger">
-                        <i class="fab fa-instagram"></i> Instagram
-                    </a>
+        </div>
+        
+        
+        <div class="col-lg-4">
+            <div class="sticky-sidebar">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-info-gradient text-white py-3">
+                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Контактная информация</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-2">
+                                <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                Адрес
+                            </h6>
+                            <p class="mb-0">г. Ульяновск, ул. Пушкина, д. 1</p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-2">
+                                <i class="fas fa-phone text-primary me-2"></i>
+                                Телефоны
+                            </h6>
+                            <p class="mb-1">
+                                <a href="tel:+79991234567" class="text-decoration-none">
+                                    +7 (999) 123-45-67
+                                </a>
+                            </p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-2">
+                                <i class="fas fa-envelope text-primary me-2"></i>
+                                Email
+                            </h6>
+                            <p class="mb-1">
+                                <a href="mailto:info@gearlock.ru" class="text-decoration-none">
+                                    info@gearlock.ru
+                                </a>
+                            </p>
+                            <p class="mb-0">
+                                <a href="mailto:support@gearlock.ru" class="text-decoration-none">
+                                    support@gearlock.ru
+                                </a>
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <h6 class="fw-bold mb-2">
+                                <i class="fas fa-clock text-primary me-2"></i>
+                                Режим работы
+                            </h6>
+                            <p class="mb-1">Пн-Пт: 9:00 - 20:00</p>
+                            <p class="mb-0">Сб-Вс: 10:00 - 18:00</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
