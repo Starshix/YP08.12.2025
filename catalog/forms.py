@@ -71,7 +71,7 @@ class ProductForm(forms.ModelForm):
         self.fields['category'].queryset = Category.objects.all()
         self.fields['slug'].required = False
         self.fields['slug'].help_text = 'URL-адрес товара. Заполнится автоматически из названия.'
-    
+
     def clean(self):
         cleaned_data = super().clean()
         name = cleaned_data.get('name')

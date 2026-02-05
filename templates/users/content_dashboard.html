@@ -181,13 +181,13 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <div class="fw-bold text-about">{{ product.price }} ₽</div>
+                                        <div class="fw-bold text-about" id="cat">{{ product.price }} ₽</div>
                                         {% if product.old_price %}
-                                            <div class="text-danger small"><s>{{ product.old_price }} ₽</s></div>
+                                            <div class="text-danger small" id="cat"><s>{{ product.old_price }} ₽</s></div>
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <div class="text-success small mt-1"><i class="fas fa-circle"></i> Активен</div>
+                                        <div class="text-success small mt-1" ><i class="fas fa-circle" id="cirk"></i> Активен</div>
                                     </td>
                                     <td>
                                         <div class="btn-group btn-group-sm" role="group">
@@ -429,14 +429,6 @@
                         <a href="{% url 'users:dashboard' %}" class="btn btn-outline-secondary">
                             <i class="fas fa-arrow-left me-2"></i> На главный дашборд
                         </a>
-                        <div>
-                            <button onclick="window.print()" class="btn btn-outline-primary me-2">
-                                <i class="fas fa-print me-2"></i> Печать отчета
-                            </button>
-                            <button class="btn btn-outline-success" id="exportReport">
-                                <i class="fas fa-file-excel me-2"></i> Экспорт
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>

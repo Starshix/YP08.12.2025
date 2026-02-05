@@ -95,7 +95,6 @@
                                 <a href="{% url 'catalog:product_list' %}" 
                                    class="category-link {% if not current_category %}active{% endif %}">
                                     Все категории
-                                    <span class="category-count">{{ products.count }}</span>
                                 </a>
                             </li>
                             {% for category in categories %}

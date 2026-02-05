@@ -7729,4 +7729,16 @@ h6.fw-bold {
     color: white;
 }
 
+#contnentbtn{
+    max-width:230px !important;
+}
+#cat{
+    width: 100px;
+    font-size: 12px;
+    text-align: center;
+}
+#pr{
+    flex-wrap: nowrap;
+}
+
 

@@ -121,12 +121,24 @@
                     <div class="add-to-cart-section">
                         {% if product.availability == 'in_stock' or product.availability == 'limited' %}
                             <form action="{% url 'cart:cart_add' product.id %}" method="post" 
-                                  class="d-flex align-items-center add-to-cart-form">
+                                class="d-flex align-items-center add-to-cart-form" 
+                                id="add-to-cart-form-{{ product.id }}"
+                                onsubmit="return validateAddToCart({{ product.id }}, {{ product.quantity }})">
                                 {% csrf_token %}
                                 <div class="me-3">
                                     <label for="quantity" class="form-label">Количество:</label>
-                                    <input type="number" name="quantity" id="quantity" value="1" min="1" 
-                                           max="{{ product.quantity }}" class="form-control">
+                                    <div class="input-group" style="width: 150px;" id="pr">
+                                        <button class="btn btn-outline-secondary" type="button" onclick="decrementQuantity({{ product.id }})">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <input type="number" name="quantity" id="quantity-{{ product.id }}" 
+                                            value="1" min="1" max="{{ product.quantity }}" 
+                                            class="form-control text-center">
+                                        <button class="btn btn-outline-secondary" type="button" onclick="incrementQuantity({{ product.id }}, {{ product.quantity }})">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                    <small class="text-muted">Доступно: {{ product.quantity }} шт.</small>
                                 </div>
                                 <div>
                                     <button type="submit" class="btn btn-primary btn-lg">
@@ -216,4 +228,43 @@
     </div>
     {% endif %}
 </div>
+
+<script>
+    function validateAddToCart(productId, maxQuantity) {
+        const input = document.getElementById(`quantity-${productId}`);
+        const quantity = parseInt(input.value);
+        
+        if (isNaN(quantity) || quantity < 1) {
+            alert('Введите корректное количество');
+            input.value = 1;
+            return false;
+        }
+        
+        if (quantity > maxQuantity) {
+            alert(`Максимально доступное количество: ${maxQuantity} шт.`);
+            input.value = maxQuantity;
+            return false;
+        }
+        
+        return true;
+    }
+
+    function decrementQuantity(productId) {
+        const input = document.getElementById(`quantity-${productId}`);
+        let value = parseInt(input.value);
+        if (value > 1) {
+            input.value = value - 1;
+        }
+    }
+
+    function incrementQuantity(productId, maxQuantity) {
+        const input = document.getElementById(`quantity-${productId}`);
+        let value = parseInt(input.value);
+        if (value < maxQuantity) {
+            input.value = value + 1;
+        } else {
+            alert(`Максимально доступное количество: ${maxQuantity} шт.`);
+        }
+    }
+</script>
 {% endblock %}

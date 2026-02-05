@@ -56,8 +56,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'cart.context_processors.cart',           # Для корзины
-                'catalog.context_processors.categories',  # Для категорий
+                'cart.context_processors.cart',
+                'catalog.context_processors.categories',
             ],
         },
     },
@@ -87,10 +87,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Добавьте бэкенд аутентификации
 AUTHENTICATION_BACKENDS = [
-    'users.backends.EmailBackend',  # Наш кастомный бэкенд
-    'django.contrib.auth.backends.ModelBackend',  # Стандартный бэкенд
+    'users.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 LANGUAGE_CODE = 'ru-ru'

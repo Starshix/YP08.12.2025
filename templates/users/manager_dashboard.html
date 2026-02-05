@@ -229,7 +229,7 @@
                                         </div>
                                     </div>
                                     <div class="col-auto">
-                                        <a href="{% url 'orders:order_detail' order.id %}" 
+                                        <a href="{% url 'orders:order_detail_manager' order.id %}" 
                                            class="btn btn-sm btn-outline-primary" title="Детали">
                                             <i class="fas fa-eye"></i>
                                         </a>
@@ -373,9 +373,6 @@
                         <a href="{% url 'users:dashboard' %}" class="btn btn-outline-secondary">
                             <i class="fas fa-arrow-left me-2"></i> На главный дашборд
                         </a>
-                        <button onclick="window.print()" class="btn btn-outline-primary">
-                            <i class="fas fa-print me-2"></i> Печать отчета
-                        </button>
                     </div>
                 </div>
             </div>
