@@ -18,7 +18,7 @@ def register(request):
 
             authenticated_user = authenticate(
                 request,
-                username=user.email,  # или user.username, если есть
+                username=user.email,
                 password=form.cleaned_data['password1']
             )
             
@@ -45,7 +45,7 @@ def user_login(request):
             messages.success(request, f'Добро пожаловать, {user.first_name}!')
             
 
-            next_url = request.GET.get('next', 'users:dashboard')  # Добавили 'users:'
+            next_url = request.GET.get('next', 'users:dashboard')
             return redirect(next_url)
     else:
         form = UserLoginForm()
@@ -117,7 +117,7 @@ def dashboard(request):
 
         categories = Category.objects.annotate(
             product_count=Count('products')
-        ).order_by('-product_count')[:10]  # Топ 10 категорий
+        ).order_by('-product_count')[:10]
         
         total_categories = Category.objects.count()
         
@@ -220,10 +220,8 @@ def manager_dashboard(request):
     """Дашборд для менеджеров"""
     user = request.user
     
-    # Все заказы
     all_orders = Order.objects.all()
     
-    # Подсчет заказов по статусам - используем правильные статусы
     context = {
         'total_orders': all_orders.count(),
         'completed_orders': all_orders.filter(status='delivered').count(),
@@ -231,15 +229,13 @@ def manager_dashboard(request):
         'shipped_orders': all_orders.filter(status='shipped').count(),
         'cancelled_orders': all_orders.filter(status='cancelled').count(),
     }
-    
-    # Процентное соотношение
+
     total_orders_for_percentage = context['total_orders'] if context['total_orders'] > 0 else 1
     context['processing_percentage'] = round((context['processing_orders'] / total_orders_for_percentage) * 100, 1)
     context['shipped_percentage'] = round((context['shipped_orders'] / total_orders_for_percentage) * 100, 1)
     context['completed_percentage'] = round((context['completed_orders'] / total_orders_for_percentage) * 100, 1)
     context['cancelled_percentage'] = round((context['cancelled_orders'] / total_orders_for_percentage) * 100, 1)
     
-    # Общая выручка (только завершенные и отправленные заказы)
     total_revenue = all_orders.filter(
         status__in=['delivered', 'shipped'] 
     ).aggregate(
@@ -247,26 +243,20 @@ def manager_dashboard(request):
     )['total'] or 0
     context['total_revenue'] = total_revenue
     
-    
-    
-    # Подсчет клиентов
     try:
         customer_role = Role.objects.get(name='customer')
         context['total_customers'] = User.objects.filter(role=customer_role).count()
     except Role.DoesNotExist:
         context['total_customers'] = User.objects.filter(is_staff=False, is_superuser=False).count()
     
-    # Последние заказы (10 последних)
     context['recent_orders'] = Order.objects.select_related('user').prefetch_related('items').order_by('-created_at')[:10]
     
-    # Для менеджера также показываем статистику товаров
     context['total_products'] = Product.objects.count()
     context['in_stock'] = Product.objects.filter(quantity__gt=0).count()
     context['out_of_stock'] = Product.objects.filter(quantity=0).count()
     context['active_products'] = Product.objects.filter(is_active=True).count()
     context['total_categories'] = Category.objects.count()
     
-    # Флаги для шаблона
     context['is_manager'] = True
     context['user'] = user
     
@@ -284,7 +274,7 @@ def content_dashboard(request):
     active_products = Product.objects.filter(is_active=True).count()
     categories = Category.objects.annotate(
         product_count=Count('products')
-    ).order_by('-product_count')[:10]  # Топ 10 категорий
+    ).order_by('-product_count')[:10] 
     
     total_categories = Category.objects.count()
 

@@ -213,3 +213,4 @@ class CategoryForm(forms.ModelForm):
             cleaned_data['slug'] = base_slug
         
         return cleaned_data
+

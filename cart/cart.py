@@ -6,28 +6,15 @@ from django.contrib import messages
 class Cart:
     def __init__(self, request):
         self.session = request.session
-        self.request = request  # Сохраняем request для доступа к messages
+        self.request = request
         cart = self.session.get(settings.CART_SESSION_ID)
         if not cart:
             cart = self.session[settings.CART_SESSION_ID] = {}
         self.cart = cart
     
     def add(self, product, quantity=1, override_quantity=False, show_messages=True):
-        """
-        Добавляет товар в корзину с проверкой доступного количества
-        
-        Args:
-            product: объект Product
-            quantity: количество для добавления
-            override_quantity: перезаписать ли существующее количество
-            show_messages: показывать ли сообщения пользователю
-            
-        Returns:
-            tuple: (success: bool, message: str)
-        """
         product_id = str(product.id)
         
-        # Проверяем доступное количество товара
         available_quantity = product.quantity
         
         if product_id in self.cart:

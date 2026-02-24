@@ -1,9 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, Group, Permission
-from django.utils.translation import gettext_lazy as _
-from django.conf import settings
-
-from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
@@ -131,3 +126,4 @@ def has_perm(self, perm, obj=None):
     
 
     return super().has_perm(perm, obj)
+
