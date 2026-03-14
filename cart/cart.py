@@ -1,4 +1,3 @@
-# cart/cart.py
 from django.conf import settings
 from catalog.models import Product
 from django.contrib import messages
@@ -19,7 +18,6 @@ class Cart:
         
         if product_id in self.cart:
             if override_quantity:
-                # Если перезаписываем количество
                 if quantity > available_quantity:
                     message = f'Доступно только {available_quantity} шт. товара "{product.name}"'
                     if show_messages and self.request:
@@ -28,7 +26,6 @@ class Cart:
                 self.cart[product_id]['quantity'] = quantity
                 message = f'Количество товара "{product.name}" обновлено'
             else:
-                # Если добавляем к существующему
                 current_quantity = self.cart[product_id]['quantity']
                 new_quantity = current_quantity + quantity
                 
@@ -42,7 +39,6 @@ class Cart:
                 self.cart[product_id]['quantity'] = new_quantity
                 message = f'Товар "{product.name}" добавлен в корзину'
         else:
-            # Если товара еще нет в корзине
             if quantity > available_quantity:
                 message = f'Доступно только {available_quantity} шт. товара "{product.name}"'
                 if show_messages and self.request:

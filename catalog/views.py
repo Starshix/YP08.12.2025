@@ -188,7 +188,7 @@ def home(request):
         'featured_products': featured_products,
         'new_products': new_products,
         'sale_products': sale_products,
-        'categories': main_categories,  # Используем отфильтрованные
+        'categories': main_categories, 
     }
     return render(request, 'catalog/home.html', context)
 

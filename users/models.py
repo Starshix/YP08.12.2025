@@ -29,6 +29,7 @@ class Role(models.Model):
         return self.get_name_display()
 
 
+
 class User(AbstractUser):
 
     email = models.EmailField(_('email address'), unique=True)

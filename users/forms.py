@@ -145,7 +145,7 @@ class UserLoginForm(AuthenticationForm):
             
             self.user_cache = authenticate(
                 self.request, 
-                username=user.username,  # Используем username для аутентификации
+                username=user.username,
                 password=password
             )
             
