@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Сообщение от {{ message.name }} - GearLock{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    
+    <!-- Заголовок -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-primary-gradient text-white py-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-lg bg-white text-primary rounded-3 me-3">
+                                <i class="fas fa-envelope-open fs-3 bg-may"></i>
+                            </div>
+                            <div>
+                                <h1 class="h3 fw-bold mb-1">Просмотр сообщения</h1>
+                                <p class="mb-0 opacity-90">От {{ message.name }} • {{ message.created_at|date:"d.m.Y H:i" }}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <a href="{% url 'pages:message_list' %}" class="btn btn-light me-2 bg-may">
+                                <i class="fas fa-arrow-left me-2 bg-may"></i>К списку
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Навигация между сообщениями -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between">
+                <div>
+                    {% if prev_message %}
+                    <a href="{% url 'pages:message_detail' prev_message.id %}" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left me-2"></i>Предыдущее
+                    </a>
+                    {% endif %}
+                </div>
+                <div>
+                    {% if next_message %}
+                    <a href="{% url 'pages:message_detail' next_message.id %}" class="btn btn-outline-primary">
+                        Следующее<i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Детали сообщения -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-light py-3">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-comment me-2 text-primary bg-may"></i>
+                        Сообщение
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="mb-4">
+                        <h4 class="fw-bold">{{ message.subject }}</h4>
+                        <div class="d-flex align-items-center mt-2">
+                            <span class="badge {% if message.is_read %}bg-success{% else %}bg-warning text-dark{% endif %} me-2">
+                                {% if message.is_read %}Прочитано{% else %}Новое{% endif %}
+                            </span>
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>
+                                Получено: {{ message.created_at|date:"d.m.Y H:i" }}
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="message-content p-4 bg-light rounded-3">
+                        {{ message.message|linebreaks }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Информация об отправителе -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-light py-3">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-user me-2 text-primary bg-may"></i>
+                        Отправитель
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="avatar-circle bg-primary-gradient text-white mx-auto mb-3" 
+                             style="width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                            {{ message.name|first|upper }}
+                        </div>
+                        <h5 class="fw-bold mb-1">{{ message.name }}</h5>
+                    </div>
+                    
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex align-items-center px-0">
+                            <div class="icon-sm bg-primary bg-opacity-10 rounded-circle me-3">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block ">Email</small>
+                                <a href="mailto:{{ message.email }}" class="text-decoration-none bg-may">
+                                    {{ message.email }}
+                                </a>
+                            </div>
+                        </div>
+                        
+                        {% if message.phone %}
+                        <div class="list-group-item d-flex align-items-center px-0">
+                            <div class="icon-sm bg-success bg-opacity-10 rounded-circle me-3">
+                                <i class="fas fa-phone text-success"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block">Телефон</small>
+                                <a href="tel:{{ message.phone }}" class="text-decoration-none bg-may">
+                                    {{ message.phone }}
+                                </a>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Действия -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light py-3">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-cog me-2 bg-may"></i>
+                        Действия
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        {% if message.is_read %}
+                        <a href="{% url 'pages:message_mark_unread' message.id %}" 
+                           class="btn btn-warning">
+                            <i class="fas fa-clock me-2"></i>Отметить как непрочитанное
+                        </a>
+                        {% else %}
+                        <a href="{% url 'pages:message_mark_read' message.id %}" 
+                           class="btn btn-success">
+                            <i class="fas fa-check me-2"></i>Отметить как прочитанное
+                        </a>
+                        {% endif %}
+                        
+                        <a href="mailto:{{ message.email }}?subject=Re: {{ message.subject }}" 
+                           class="btn btn-primary">
+                            <i class="fas fa-reply me-2"></i>Ответить по email
+                        </a>
+                        
+                        <a href="{% url 'pages:message_delete' message.id %}" 
+                           class="btn btn-danger"
+                           onclick="return confirm('Удалить сообщение от {{ message.name }}?')">
+                            <i class="fas fa-trash me-2"></i>Удалить
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.avatar-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.message-content {
+    white-space: pre-wrap;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+</style>
+{% endblock %}

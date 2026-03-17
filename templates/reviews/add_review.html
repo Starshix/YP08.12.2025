@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block title %}Оставить отзыв - {{ product.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .rating-input {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+        gap: 5px;
+    }
+    
+    .rating-input input {
+        display: none;
+    }
+    
+    .rating-input label {
+        cursor: pointer;
+        font-size: 2rem;
+        color: #ddd;
+        transition: all 0.2s;
+    }
+    
+    .rating-input label:hover,
+    .rating-input label:hover ~ label,
+    .rating-input input:checked ~ label {
+        color: #ffd700;
+    }
+    
+    .purchased-badge {
+        display: inline-block;
+        padding: 5px 15px;
+        background: #27ae60;
+        color: white;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary-gradient text-white py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-star me-2"></i>
+                        Оставить отзыв на товар
+                    </h5>
+                </div>
+                
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-4">
+                        {% if product.main_image %}
+                            <img src="{{ product.main_image.url }}" 
+                                 alt="{{ product.name }}"
+                                 class="rounded-3 me-3"
+                                 style="width: 80px; height: 80px; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-light rounded-3 d-flex align-items-center justify-content-center me-3"
+                                 style="width: 80px; height: 80px;">
+                                <i class="fas fa-car text-muted fa-2x"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <div>
+                            <h6 class="fw-bold mb-1">{{ product.name }}</h6>
+                            <p class="text-muted small mb-2">Артикул: {{ product.sku }}</p>
+                            
+                            {% if purchased %}
+                                <span class="purchased-badge">
+                                    <i class="fas fa-check-circle me-1"></i>
+                                    Подтвержденная покупка
+                                </span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>
+                                    Вы не покупали этот товар
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <form method="post" id="reviewForm">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">{{ form.rating.label }}</label>
+                            {{ form.rating }}
+                            {% if form.rating.help_text %}
+                                <small class="text-muted d-block mt-1">{{ form.rating.help_text }}</small>
+                            {% endif %}
+                            {% if form.rating.errors %}
+                                <div class="text-danger small mt-1">{{ form.rating.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ form.title.label }}</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="text-danger small mt-1">{{ form.title.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ form.comment.label }}</label>
+                            {{ form.comment }}
+                            {% if form.comment.errors %}
+                                <div class="text-danger small mt-1">{{ form.comment.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">{{ form.advantages.label }}</label>
+                                {{ form.advantages }}
+                                {% if form.advantages.errors %}
+                                    <div class="text-danger small mt-1">{{ form.advantages.errors }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">{{ form.disadvantages.label }}</label>
+                                {{ form.disadvantages }}
+                                {% if form.disadvantages.errors %}
+                                    <div class="text-danger small mt-1">{{ form.disadvantages.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Ваш отзыв будет опубликован после проверки модератором.
+                            {% if not purchased %}
+                                <br>Отзывы оставляют только покупатели, совершившие покупку.
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'catalog:product_detail' product.slug %}" 
+                               class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Вернуться к товару
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i>
+                                Отправить отзыв
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Автоматическая установка звезд при клике
+    const stars = document.querySelectorAll('.rating-input label');
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const rating = this.previousElementSibling?.value || 5;
+            console.log('Selected rating:', rating);
+        });
+    });
+});
+</script>
+{% endblock %}

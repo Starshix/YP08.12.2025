@@ -1,0 +1,519 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Чек заказа #{{ order.id }} - GearLock{% endblock %}
+
+{% block content %}
+<style>
+    @media print {
+        /* Сброс всех фонов, теней, цветов */
+        * {
+            background: transparent !important;
+            color: black !important;
+            box-shadow: none !important;
+            text-shadow: none !important;
+            border-color: #000 !important;
+        }
+        
+        /* Скрываем всё лишнее */
+        .no-print,
+        .btn-print,
+        .btn-back,
+        button,
+        .navbar,
+        .footer,
+        .breadcrumb,
+        .messages {
+            display: none !important;
+        }
+        
+        /* Основной контейнер на всю ширину */
+        .receipt-container {
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .receipt-card {
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        /* Заголовок */
+        h1 {
+            font-size: 24pt;
+            margin: 0 0 10pt 0;
+            text-align: center;
+        }
+        
+        /* Таблица */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20pt 0;
+        }
+        
+        th, td {
+            border: 1px solid #000 !important;
+            padding: 8pt;
+            text-align: left;
+            font-size: 11pt;
+        }
+        
+        th {
+            background: none !important;
+            font-weight: bold;
+        }
+        
+        /* Текст */
+        p {
+            margin: 5pt 0;
+            line-height: 1.4;
+            font-size: 11pt;
+        }
+        
+        /* Разделители */
+        .border-bottom, .border-top {
+            border: none !important;
+            border-top: 1px solid #000 !important;
+            margin: 15pt 0;
+        }
+        
+        /* Выравнивание */
+        .text-right {
+            text-align: right;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        /* Отступы */
+        .mb-4 {
+            margin-bottom: 15pt;
+        }
+        
+        .mt-4 {
+            margin-top: 15pt;
+        }
+        
+        .py-2 {
+            padding: 10pt 0;
+        }
+        
+        /* Страница */
+        body {
+            margin: 0.5in;
+            font-family: 'Times New Roman', serif;
+            line-height: 1.3;
+        }
+        
+        /* Избегаем разрывов внутри важных блоков */
+        .receipt-card {
+            page-break-inside: avoid;
+        }
+        
+        table {
+            page-break-inside: auto;
+        }
+        
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+        
+        /* Колонтитулы */
+        @page {
+            margin: 1in;
+            size: A4;
+            
+            @top-center {
+                content: "Товарный чек №{{ order.id }}";
+                font-size: 9pt;
+                color: #000;
+            }
+            
+            @bottom-center {
+                content: "Страница " counter(page);
+                font-size: 9pt;
+                color: #000;
+            }
+        }
+        
+        /* Первая страница без верхнего колонтитула */
+        @page :first {
+            @top-center {
+                content: "";
+            }
+        }
+    }
+    
+    .print-only {
+        display: none;
+    }
+    
+    .receipt-card {
+        max-width: 800px;
+        margin: 0 auto;
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .receipt-header {
+        background: linear-gradient(135deg, #a50315 0%, #ff4757 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+    }
+    
+    .receipt-header h1 {
+        font-size: 32px;
+        font-weight: 800;
+        margin: 0 0 10px;
+        letter-spacing: -1px;
+    }
+    
+    .receipt-header p {
+        margin: 5px 0;
+        opacity: 0.9;
+    }
+    
+    .receipt-body {
+        padding: 30px;
+        background: white;
+    }
+    
+    .receipt-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    .receipt-info-item {
+        text-align: center;
+        flex: 1;
+    }
+    
+    .receipt-info-item .label {
+        font-size: 12px;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .receipt-info-item .value {
+        font-size: 18px;
+        font-weight: 700;
+        color: #a50315;
+    }
+    
+    .company-details {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #a50315;
+    }
+    
+    .company-details p {
+        margin: 5px 0;
+        color: #495057;
+    }
+    
+    .receipt-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+    }
+    
+    .receipt-table th {
+        background: #f8f9fa;
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+        color: #495057;
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .receipt-table td {
+        padding: 12px;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .receipt-table tbody tr:hover {
+        background: #f8f9fa;
+    }
+    
+    .receipt-total {
+        margin-top: 20px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        text-align: right;
+    }
+    
+    .receipt-total table {
+        width: 100%;
+    }
+    
+    .receipt-total td {
+        padding: 8px;
+    }
+    
+    .receipt-total .grand-total {
+        font-size: 24px;
+        font-weight: 800;
+        color: #a50315;
+    }
+    
+    .customer-info {
+        margin-top: 30px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    .receipt-footer {
+        margin-top: 30px;
+        padding: 20px;
+        text-align: center;
+        color: #6c757d;
+        font-size: 12px;
+        border-top: 1px dashed #dee2e6;
+    }
+    
+    .action-buttons {
+        margin-top: 30px;
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+    }
+    
+    .btn-print {
+        background: #28a745;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s;
+    }
+    
+    .btn-print:hover {
+        background: #218838;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+    }
+    
+    .btn-back {
+        background: #6c757d;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s;
+    }
+    
+    .btn-back:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+    }
+    
+    .watermark {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-45deg);
+        font-size: 60px;
+        color: rgba(165, 3, 21, 0.03);
+        white-space: nowrap;
+        z-index: -1;
+        pointer-events: none;
+    }
+
+</style>
+
+<div class="container py-4">
+    <div class="receipt-card">
+        <div class="watermark">GEARLOCK</div>
+        
+        <div class="receipt-header">
+            <h1>GEARLOCK</h1>
+            <p>Магазин автоаксессуаров</p>
+            <p style="font-size: 14px; margin-top: 10px;">Чек №{{ order.id }}</p>
+        </div>
+        
+        <div class="receipt-body">
+            <!-- Информация о заказе -->
+            <div class="receipt-info">
+                <div class="receipt-info-item">
+                    <div class="label">Номер заказа</div>
+                    <div class="value">#{{ order.id }}</div>
+                </div>
+                <div class="receipt-info-item">
+                    <div class="label">Дата</div>
+                    <div class="value">{{ order.created_at|date:"d.m.Y H:i" }}</div>
+                </div>
+                <div class="receipt-info-item">
+                    <div class="label">Статус</div>
+                    <div class="value">
+                        <span class="badge bg-success">{{ order.get_status_display }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Данные компании -->
+            <div class="company-details">
+                <div>
+                    <p><strong>ООО "GearLock"</strong></p>
+                    <p>ИНН: 1234567890</p>
+                    <p>ОГРН: 1234567890123</p>
+                </div>
+                <div style="text-align: right;">
+                    <p>г. Ульяновск, ул. Пушкина, д. 1</p>
+                    <p>+7 (999) 123-45-67</p>
+                    <p>info@gearlock.ru</p>
+                </div>
+            </div>
+            
+            <!-- Таблица товаров -->
+            <h4 style="margin-bottom: 20px;">Состав заказа</h4>
+            <table class="receipt-table">
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Товар</th>
+                        <th>Артикул</th>
+                        <th>Кол-во</th>
+                        <th>Цена</th>
+                        <th>Сумма</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><strong>{{ item.product.name }}</strong></td>
+                        <td>{{ item.product.sku }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.price }} ₽</td>
+                        <td><strong>{{ item.total_price }} ₽</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <!-- Итоги -->
+            <div class="receipt-total">
+                <table>
+                    <tr>
+                        <td style="text-align: left;">Стоимость товаров:</td>
+                        <td style="text-align: right;">{{ order.total_price }} ₽</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left;">Доставка:</td>
+                        <td style="text-align: right;">
+                            {% if order.total_price >= 3000 %}
+                                <span class="text-success">Бесплатно</span>
+                            {% else %}
+                                300 ₽
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left;">НДС 20%:</td>
+                        <td style="text-align: right;">{{ order.total_price|floatformat:2|add:"*0.2"|floatformat:2 }} ₽</td>
+                    </tr>
+                    <tr style="border-top: 2px solid #dee2e6;">
+                        <td style="text-align: left; font-size: 20px; font-weight: 800;">ИТОГО К ОПЛАТЕ:</td>
+                        <td style="text-align: right;" class="grand-total">{{ order.total_price }} ₽</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <!-- Информация о покупателе -->
+            <div class="customer-info">
+                <h5 style="margin-bottom: 15px;">Информация о покупателе</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Имя:</strong> {{ order.first_name }} {{ order.last_name }}</p>
+                        <p><strong>Email:</strong> {{ order.email }}</p>
+                        <p><strong>Телефон:</strong> {{ order.phone }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Адрес доставки:</strong></p>
+                        <p>{{ order.address }}, {{ order.city }}</p>
+                        <p>Индекс: {{ order.postal_code }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Способ оплаты -->
+            <div style="margin-top: 20px; padding: 15px; background: #e8f4fd; border-radius: 8px;">
+                <p><strong>Способ оплаты:</strong> {{ order.get_payment_method_display }}</p>
+                {% if order.notes %}
+                <p><strong>Примечания:</strong> {{ order.notes }}</p>
+                {% endif %}
+            </div>
+            
+            <!-- Подписи -->
+            <div style="margin-top: 40px; display: flex; justify-content: space-between;">
+                <div style="text-align: center; width: 200px;">
+                    <hr style="margin: 10px 0;">
+                    <small>Подпись продавца</small>
+                </div>
+                <div style="text-align: center; width: 200px;">
+                    <hr style="margin: 10px 0;">
+                    <small>Подпись покупателя</small>
+                </div>
+            </div>
+            
+            <!-- Футер -->
+            <div class="receipt-footer">
+                <p>Чек сформирован автоматически и является действительным документом.</p>
+                <p>Спасибо за покупку в GearLock!</p>
+                <p style="margin-top: 10px;">www.gearlock.ru | support@gearlock.ru</p>
+            </div>
+            
+            <!-- Кнопки действий -->
+            <div class="action-buttons no-print">
+                <button onclick="window.print()" class="btn-print">
+                    <i class="fas fa-print"></i> Распечатать чек
+                </button>
+                <a href="{% url 'orders:order_detail' order.id %}" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Вернуться к заказу
+                </a>
+            </div>
+            
+            <!-- Инструкция для печати -->
+            <div class="print-only alert alert-info text-center">
+                <i class="fas fa-info-circle"></i>
+                Для сохранения в PDF: нажмите "Сохранить как PDF" в настройках печати
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Автоматически открывать диалог печати при загрузке (опционально)
+    document.addEventListener('DOMContentLoaded', function() {
+        // Раскомментируй, если хочешь сразу открывать печать
+        // setTimeout(() => window.print(), 500);
+    });
+</script>
+{% endblock %}

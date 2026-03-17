@@ -4151,6 +4151,7 @@ input:checked + .switch-slider:before {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     gap: 2px;
 }
 
@@ -7740,5 +7741,13 @@ h6.fw-bold {
 #pr{
     flex-wrap: nowrap;
 }
-
-
+#rew{
+    max-width: 320px;
+}
+.bg-may{
+    color: #a50315 !important;
+}
+#may{
+    align-items: center;
+    gap: 0 10px;
+}

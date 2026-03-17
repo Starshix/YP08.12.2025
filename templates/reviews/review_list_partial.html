@@ -1,0 +1,100 @@
+{% load reviews_extras %}
+
+{% for review in reviews %}
+<div class="review-item mb-4 p-4 border rounded-3" id="review-{{ review.id }}">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div class="d-flex align-items-center">
+            <div class="avatar-circle bg-primary-gradient text-white me-3">
+                {{ review.user.email|first|upper }}
+            </div>
+            <div>
+                <h6 class="fw-bold mb-1">{{ review.user.get_full_name|default:review.user.email }}</h6>
+                <div class="d-flex align-items-center">
+                    <div class="text-warning me-2">
+                        {% for i in "12345"|make_list %}
+                            {% if forloop.counter <= review.rating %}
+                                <i class="fas fa-star"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <small class="text-muted">{{ review.created_at|date:"d.m.Y" }}</small>
+                    
+                    {% if review.is_purchased %}
+                        <span class="badge bg-success bg-opacity-10 text-success ms-3">
+                            <i class="fas fa-check-circle me-1"></i>Покупка подтверждена
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        {% if review.user == request.user %}
+        <div class="dropdown">
+            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a class="dropdown-item" href="{% url 'reviews:edit_review' review.id %}">
+                        <i class="fas fa-edit me-2"></i>Редактировать
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item text-danger" href="{% url 'reviews:delete_review' review.id %}">
+                        <i class="fas fa-trash me-2"></i>Удалить
+                    </a>
+                </li>
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+    
+    <h6 class="fw-bold mb-2">{{ review.title }}</h6>
+    <p class="mb-3">{{ review.comment|linebreaksbr }}</p>
+    
+    {% if review.advantages %}
+    <div class="mb-2">
+        <span class="badge bg-success me-2">Достоинства</span>
+        <span class="text-success">{{ review.advantages }}</span>
+    </div>
+    {% endif %}
+    
+    {% if review.disadvantages %}
+    <div class="mb-3">
+        <span class="badge bg-danger me-2">Недостатки</span>
+        <span class="text-danger">{{ review.disadvantages }}</span>
+    </div>
+    {% endif %}
+    
+    {% if review.images.all %}
+    <div class="review-images d-flex gap-2 mb-3">
+        {% for image in review.images.all %}
+        <img src="{{ image.image.url }}" alt="Review image" class="rounded-3" 
+             style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
+             onclick="window.open(this.src, '_blank')">
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-sm btn-outline-success vote-btn {% if user_vote == 'like' %}active{% endif %}"
+                data-review-id="{{ review.id }}" data-vote-type="like">
+            <i class="fas fa-thumbs-up me-1"></i>
+            <span class="likes-count">{{ review.votes.like.count }}</span>
+        </button>
+        <button class="btn btn-sm btn-outline-danger vote-btn {% if user_vote == 'dislike' %}active{% endif %}"
+                data-review-id="{{ review.id }}" data-vote-type="dislike">
+            <i class="fas fa-thumbs-down me-1"></i>
+            <span class="dislikes-count">{{ review.votes.dislike.count }}</span>
+        </button>
+    </div>
+</div>
+{% empty %}
+<div class="text-center py-5">
+    <i class="far fa-comment-dots fa-4x text-muted mb-3"></i>
+    <h5>Пока нет отзывов</h5>
+    <p class="text-muted">Будьте первым, кто оставит отзыв об этом товаре!</p>
+</div>
+{% endfor %}

@@ -135,3 +135,39 @@ def change_order_status(request, order_id):
             messages.success(request, f'Статус заказа #{order.id} изменен на {order.get_status_display()}')
     
     return redirect('orders:order_detail_manager', order_id=order.id)
+
+@login_required
+def view_receipt(request, order_id):
+    """Просмотр чека в HTML формате"""
+    # Получаем пользователя
+    user = request.user
+    
+    # Проверяем права доступа
+    is_manager = False
+    is_admin = False
+    
+    # Проверяем через role, если есть
+    if hasattr(user, 'role') and user.role:
+        is_manager = user.role.name == 'manager'
+        is_admin = user.role.name == 'admin' or user.is_superuser
+    else:
+        # Fallback на старые методы
+        is_manager = hasattr(user, 'is_manager') and user.is_manager
+        is_admin = user.is_superuser
+    
+    # Если пользователь - менеджер или админ, показываем любой заказ
+    if is_manager or is_admin:
+        order = get_object_or_404(Order, id=order_id)
+    else:
+        # Иначе только свой заказ
+        order = get_object_or_404(Order, id=order_id, user=user)
+    
+    # Получаем товары
+    items = order.items.select_related('product').all()
+    
+    context = {
+        'order': order,
+        'items': items,
+    }
+    
+    return render(request, 'orders/receipt_pdf.html', context)

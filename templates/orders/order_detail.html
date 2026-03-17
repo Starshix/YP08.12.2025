@@ -188,6 +188,9 @@
                     <a href="{% url 'orders:order_list' %}" class="btn btn-outline-about btn-lg">
                         <i class="fas fa-arrow-left me-2"></i> К списку заказов
                     </a>
+                    <a href="{% url 'orders:view_receipt' order.id %}" class="btn btn-success btn-lg">
+                        <i class="fas fa-file-invoice me-2"></i> Посмотреть чек
+                    </a>
                     {% if order.status == 'new' or order.status == 'processing' %}
                     <button class="btn btn-outline-danger btn-lg" 
                             onclick="alert('Для отмены заказа свяжитесь с менеджером')">

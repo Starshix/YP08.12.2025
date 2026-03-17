@@ -9,6 +9,7 @@ from .decorators import customer_required, manager_required, content_manager_req
 from .models import User, Role
 from orders.models import Order
 from django.contrib.auth import authenticate
+from pages.models import Contact
 
 def register(request):
     if request.method == 'POST':
@@ -221,6 +222,9 @@ def manager_dashboard(request):
     user = request.user
     
     all_orders = Order.objects.all()
+
+    recent_messages = Contact.objects.all().order_by('-created_at')[:5]
+    unread_messages_count = Contact.objects.filter(is_read=False).count()
     
     context = {
         'total_orders': all_orders.count(),
@@ -228,6 +232,8 @@ def manager_dashboard(request):
         'processing_orders': all_orders.filter(status='processing').count(),
         'shipped_orders': all_orders.filter(status='shipped').count(),
         'cancelled_orders': all_orders.filter(status='cancelled').count(),
+        'recent_messages': recent_messages,
+        'unread_messages_count': unread_messages_count,
     }
 
     total_orders_for_percentage = context['total_orders'] if context['total_orders'] > 0 else 1

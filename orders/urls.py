@@ -14,4 +14,7 @@ urlpatterns = [
     path('manager/<int:order_id>/', views.order_detail_manager, name='order_detail_manager'),
     path('manager/<int:order_id>/update/', views.order_update, name='order_update'),
     path('manager/<int:order_id>/change-status/', views.change_order_status, name='change_order_status'),
+    
+    # Маршрут для скачивания чека (ДОБАВЛЕНО)
+    path('<int:order_id>/receipt/', views.view_receipt, name='view_receipt'),
 ]

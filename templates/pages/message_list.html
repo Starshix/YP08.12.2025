@@ -1,0 +1,318 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Управление сообщениями - GearLock{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    
+    <!-- Заголовок -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-primary-gradient text-white py-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-lg bg-white text-primary rounded-3 me-3">
+                                <i class="fas fa-envelope text-primary fs-3 bg-may"></i>
+                            </div>
+                            <div>
+                                <h1 class="h3 fw-bold mb-1">Управление сообщениями</h1>
+                                <p class="mb-0 opacity-90">Все обращения клиентов в одном месте</p>
+                            </div>
+                        </div>
+                        <div>
+                            <a href="{% url 'users:manager_dashboard' %}" class="btn btn-light">
+                                <i class="fas fa-arrow-left me-2"></i>Назад
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Статистика -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-lg bg-primary bg-opacity-10 rounded-circle me-3">
+                            <i class="fas fa-envelope text-white text-primary fs-4"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">Всего сообщений</h6>
+                            <h3 class="fw-bold mb-0">{{ total_messages }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-lg bg-warning bg-opacity-10 rounded-circle me-3">
+                            <i class="fas fa-clock text-warning fs-4"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">Непрочитанные</h6>
+                            <h3 class="fw-bold mb-0">{{ unread_count }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-lg bg-success bg-opacity-10 rounded-circle me-3">
+                            <i class="fas fa-check-circle text-success fs-4"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">Прочитанные</h6>
+                            <h3 class="fw-bold mb-0">{{ read_count }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Фильтры и поиск -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Фильтр по статусу</label>
+                            <select name="status" class="form-select" onchange="this.form.submit()">
+                                <option value="">Все сообщения</option>
+                                <option value="unread" {% if current_status == 'unread' %}selected{% endif %}>Непрочитанные</option>
+                                <option value="read" {% if current_status == 'read' %}selected{% endif %}>Прочитанные</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Поиск</label>
+                            <div class="input-group">
+                                <input type="text" name="search" class="form-control" 
+                                       placeholder="Имя, email, тема, сообщение..." 
+                                       value="{{ search_query }}">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search"></i> Найти
+                                </button>
+                                {% if search_query %}
+                                <a href="{% url 'pages:message_list' %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times"></i> Сбросить
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Форма для массовых действий -->
+    <form method="post" action="{% url 'pages:message_bulk_action' %}" id="bulk-action-form">
+        {% csrf_token %}
+        
+        <!-- Массовые действия -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="d-flex gap-2">
+                    <select name="action" class="form-select w-auto" id="bulk-action-select">
+                        <option value="">Выберите действие...</option>
+                        <option value="mark_read">Отметить как прочитанные</option>
+                        <option value="mark_unread">Отметить как непрочитанные</option>
+                        <option value="delete">Удалить выбранные</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary" onclick="return confirmBulkAction()">
+                        <i class="fas fa-check-circle me-1"></i> Применить
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Список сообщений -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-0">
+                        {% if page_obj %}
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th width="40">
+                                                <input type="checkbox" id="select-all" onclick="toggleAll(this)">
+                                            </th>
+                                            <th>Статус</th>
+                                            <th>Дата</th>
+                                            <th>Отправитель</th>
+                                            <th>Тема</th>
+                                            <th>Сообщение</th>
+                                            <th>Действия</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for msg in page_obj %}
+                                        <tr class="{% if not msg.is_read %}table-warning{% endif %}">
+                                            <td>
+                                                <input type="checkbox" name="selected_messages" value="{{ msg.id }}" class="message-checkbox">
+                                            </td>
+                                            <td>
+                                                {% if msg.is_read %}
+                                                    <span class="badge bg-success">Прочитано</span>
+                                                {% else %}
+                                                    <span class="badge bg-warning text-dark">Новое</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <div class="small">
+                                                    <div>{{ msg.created_at|date:"d.m.Y" }}</div>
+                                                    <div class="text-muted">{{ msg.created_at|date:"H:i" }}</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold">{{ msg.name }}</div>
+                                                <div class="small text-muted">{{ msg.email }}</div>
+                                                {% if msg.phone %}
+                                                    <div class="small text-muted">{{ msg.phone }}</div>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <span class="fw-bold">{{ msg.subject|truncatechars:30 }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="text-muted small">{{ msg.message|truncatechars:50 }}</span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a href="{% url 'pages:message_detail' msg.id %}" 
+                                                       class="btn btn-outline-primary" title="Просмотр">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    {% if msg.is_read %}
+                                                        <a href="{% url 'pages:message_mark_unread' msg.id %}" 
+                                                           class="btn btn-outline-warning" title="Отметить как непрочитанное">
+                                                            <i class="fas fa-clock"></i>
+                                                        </a>
+                                                    {% else %}
+                                                        <a href="{% url 'pages:message_mark_read' msg.id %}" 
+                                                           class="btn btn-outline-success" title="Отметить как прочитанное">
+                                                            <i class="fas fa-check"></i>
+                                                        </a>
+                                                    {% endif %}
+                                                    <a href="{% url 'pages:message_delete' msg.id %}" 
+                                                       class="btn btn-outline-danger" 
+                                                       onclick="return confirm('Удалить сообщение от {{ msg.name }}?')"
+                                                       title="Удалить">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
+                                <h5 class="text-muted">Нет сообщений</h5>
+                                <p class="text-muted">Пока никто не написал в обратную связь</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Пагинация -->
+                    {% if page_obj.has_other_pages %}
+                    <div class="card-footer bg-light">
+                        <nav>
+                            <ul class="pagination justify-content-center mb-0">
+                                {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1{% if current_status %}&status={{ current_status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                                        <i class="fas fa-angle-double-left"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                                        <i class="fas fa-angle-left"></i>
+                                    </a>
+                                </li>
+                                {% endif %}
+                                
+                                {% for num in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == num %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ num }}</span>
+                                        </li>
+                                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}{% if current_status %}&status={{ current_status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                                                {{ num }}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                                        <i class="fas fa-angle-right"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if current_status %}&status={{ current_status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+function toggleAll(source) {
+    checkboxes = document.getElementsByClassName('message-checkbox');
+    for(var i=0; i<checkboxes.length; i++) {
+        checkboxes[i].checked = source.checked;
+    }
+}
+
+function confirmBulkAction() {
+    var action = document.getElementById('bulk-action-select').value;
+    var selected = document.querySelectorAll('.message-checkbox:checked').length;
+    
+    if (!action) {
+        alert('Выберите действие');
+        return false;
+    }
+    
+    if (selected === 0) {
+        alert('Выберите сообщения');
+        return false;
+    }
+    
+    if (action === 'delete') {
+        return confirm('Удалить выбранные сообщения?');
+    }
+    
+    return true;
+}
+</script>
+{% endblock %}

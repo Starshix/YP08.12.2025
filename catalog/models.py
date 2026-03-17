@@ -168,6 +168,11 @@ class Product(models.Model):
     is_featured = models.BooleanField('Рекомендуемый', default=False)
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField('Дата обновления', auto_now=True)
+    
+    def get_absolute_url(self):
+        """Возвращает URL страницы товара"""
+        from django.urls import reverse
+        return reverse('catalog:product_detail', args=[self.slug])
 
     class Meta:
         verbose_name = 'Товар'

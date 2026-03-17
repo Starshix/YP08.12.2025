@@ -4,8 +4,8 @@
 {% block content %}
 <link rel="stylesheet" href="/static/css/product_detali.css">
 <div class="container">
-    
-    
+
+
     <nav aria-label="breadcrumb" class="breadcrumb mb-4">
         <ol>
             <li class="breadcrumb-item">
@@ -17,48 +17,46 @@
                 <a href="{% url 'catalog:product_list' %}" class="breadcrumb-link">Каталог</a>
             </li>
             {% if product.category %}
-                {% if product.category.parent %}
-                    <li class="breadcrumb-item">
-                        <a href="{% url 'catalog:product_list_by_category' product.category.parent.slug %}" 
-                           class="breadcrumb-link">
-                            {{ product.category.parent.name }}
-                        </a>
-                    </li>
-                {% endif %}
-                <li class="breadcrumb-item">
-                    <a href="{% url 'catalog:product_list_by_category' product.category.slug %}" 
-                       class="breadcrumb-link">
-                        {{ product.category.name }}
-                    </a>
-                </li>
+            {% if product.category.parent %}
+            <li class="breadcrumb-item">
+                <a href="{% url 'catalog:product_list_by_category' product.category.parent.slug %}"
+                    class="breadcrumb-link">
+                    {{ product.category.parent.name }}
+                </a>
+            </li>
+            {% endif %}
+            <li class="breadcrumb-item">
+                <a href="{% url 'catalog:product_list_by_category' product.category.slug %}" class="breadcrumb-link">
+                    {{ product.category.name }}
+                </a>
+            </li>
             {% endif %}
             <li class="breadcrumb-item active">{{ product.name|truncatechars:30 }}</li>
         </ol>
     </nav>
 
     <div class="row">
-        
+
         <div class="col-md-6">
             <div class="product-gallery">
                 <div class="card img-gallery mb-3">
                     <div class="card-body text-center">
                         {% if product.images.all %}
-                            <img id="mainImage" src="{{ product.images.first.image.url }}" 
-                                 class="img-fluid" alt="{{ product.name }}">
+                        <img id="mainImage" src="{{ product.images.first.image.url }}" class="img-fluid"
+                            alt="{{ product.name }}">
                         {% else %}
-                            <img id="mainImage" src="https://via.placeholder.com/500x400" 
-                                 class="img-fluid" alt="{{ product.name }}">
+                        <img id="mainImage" src="https://via.placeholder.com/500x400" class="img-fluid"
+                            alt="{{ product.name }}">
                         {% endif %}
                     </div>
                 </div>
-                
+
                 {% if product.images.count > 1 %}
                 <div class="row g-2">
                     {% for image in product.images.all %}
                     <div class="col-3">
-                        <img src="{{ image.image.url }}" class="img-thumbnail thumbnail-image" 
-                             alt="{{ product.name }}" 
-                             onclick="document.getElementById('mainImage').src = this.src">
+                        <img src="{{ image.image.url }}" class="img-thumbnail thumbnail-image" alt="{{ product.name }}"
+                            onclick="document.getElementById('mainImage').src = this.src">
                     </div>
                     {% endfor %}
                 </div>
@@ -66,98 +64,98 @@
             </div>
         </div>
 
-        
+
         <div class="col-md-6">
             <div class="card product-info-card">
                 <div class="card-body">
                     <h1 class="h3 mb-3">{{ product.name }}</h1>
-                    
-                    
+
+
                     <div class="product-badges mb-3">
                         {% if product.is_new %}
-                            <span class="badge bg-success me-1">Новинка</span>
+                        <span class="badge bg-success me-1">Новинка</span>
                         {% endif %}
                         {% if product.is_sale and product.old_price %}
-                            <span class="badge bg-danger me-1">Скидка</span>
+                        <span class="badge bg-danger me-1">Скидка</span>
                         {% endif %}
                         <span class="badge bg-info">{{ product.get_availability_display }}</span>
                     </div>
-                    
-                    
+
+
                     <div class="price-section mb-4">
                         {% if product.old_price %}
-                            <div class="text-muted text-decoration-line-through fs-5">
-                                {{ product.old_price }} ₽
-                            </div>
+                        <div class="text-muted text-decoration-line-through fs-5">
+                            {{ product.old_price }} ₽
+                        </div>
                         {% endif %}
                         <div class="display-6 text-primary fw-bold">
                             {{ product.price }} ₽
                         </div>
                         {% if product.old_price %}
-                            <div class="text-success">
-                                Экономия {{ product.discount_percent }}%
-                            </div>
+                        <div class="text-success">
+                            Экономия {{ product.discount_percent }}%
+                        </div>
                         {% endif %}
                     </div>
-                    
-                    
+
+
                     <div class="meta-info mb-4">
                         <p><strong>Артикул:</strong> {{ product.sku }}</p>
-                        <p><strong>Категория:</strong> 
+                        <p><strong>Категория:</strong>
                             <a href="{% url 'catalog:product_list_by_category' product.category.slug %}">
                                 {{ product.category.name }}
                             </a>
                         </p>
                         {% if product.brand %}
-                            <p><strong>Бренд:</strong> 
-                                <a href="{% url 'catalog:product_list_by_brand' product.brand.slug %}">
-                                    {{ product.brand.name }}
-                                </a>
-                            </p>
+                        <p><strong>Бренд:</strong>
+                            <a href="{% url 'catalog:product_list_by_brand' product.brand.slug %}">
+                                {{ product.brand.name }}
+                            </a>
+                        </p>
                         {% endif %}
                     </div>
-                    
-                    
+
+
                     <div class="add-to-cart-section">
                         {% if product.availability == 'in_stock' or product.availability == 'limited' %}
-                            <form action="{% url 'cart:cart_add' product.id %}" method="post" 
-                                class="d-flex align-items-center add-to-cart-form" 
-                                id="add-to-cart-form-{{ product.id }}"
-                                onsubmit="return validateAddToCart({{ product.id }}, {{ product.quantity }})">
-                                {% csrf_token %}
-                                <div class="me-3">
-                                    <label for="quantity" class="form-label">Количество:</label>
-                                    <div class="input-group" style="width: 150px;" id="pr">
-                                        <button class="btn btn-outline-secondary" type="button" onclick="decrementQuantity({{ product.id }})">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <input type="number" name="quantity" id="quantity-{{ product.id }}" 
-                                            value="1" min="1" max="{{ product.quantity }}" 
-                                            class="form-control text-center">
-                                        <button class="btn btn-outline-secondary" type="button" onclick="incrementQuantity({{ product.id }}, {{ product.quantity }})">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-                                    <small class="text-muted">Доступно: {{ product.quantity }} шт.</small>
-                                </div>
-                                <div>
-                                    <button type="submit" class="btn btn-primary btn-lg">
-                                        <i class="fas fa-cart-plus"></i> Добавить в корзину
+                        <form action="{% url 'cart:cart_add' product.id %}" method="post"
+                            class="d-flex align-items-center add-to-cart-form" id="add-to-cart-form-{{ product.id }}"
+                            onsubmit="return validateAddToCart({{ product.id }}, {{ product.quantity }})">
+                            {% csrf_token %}
+                            <div class="me-3">
+                                <label for="quantity" class="form-label">Количество:</label>
+                                <div class="input-group" style="width: 150px;" id="pr">
+                                    <button class="btn btn-outline-secondary" type="button"
+                                        onclick="decrementQuantity({{ product.id }})">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="number" name="quantity" id="quantity-{{ product.id }}" value="1"
+                                        min="1" max="{{ product.quantity }}" class="form-control text-center">
+                                    <button class="btn btn-outline-secondary" type="button"
+                                        onclick="incrementQuantity({{ product.id }}, {{ product.quantity }})">
+                                        <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
-                            </form>
+                                <small class="text-muted">Доступно: {{ product.quantity }} шт.</small>
+                            </div>
+                            <div>
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-cart-plus"></i> Добавить в корзину
+                                </button>
+                            </div>
+                        </form>
                         {% else %}
-                            <button class="btn btn-secondary btn-lg" disabled>
-                                {% if product.availability == 'out_of_stock' %}
-                                    Нет в наличии
-                                {% else %}
-                                    Под заказ
-                                {% endif %}
-                            </button>
+                        <button class="btn btn-secondary btn-lg" disabled>
+                            {% if product.availability == 'out_of_stock' %}
+                            Нет в наличии
+                            {% else %}
+                            Под заказ
+                            {% endif %}
+                        </button>
                         {% endif %}
                     </div>
-                    
-                    
+
+
                     <div class="alert alert-info">
                         <i class="fas fa-shipping-fast me-2"></i>
                         Бесплатная доставка при заказе от 3000 ₽
@@ -166,11 +164,11 @@
             </div>
         </div>
     </div>
-    
-    
+
+
     <div class="row mt-4">
         <div class="col-12">
-            
+
             {% if product.description %}
             <div class="description-section">
                 <h5>Описание</h5>
@@ -181,8 +179,8 @@
                 </div>
             </div>
             {% endif %}
-            
-            
+
+
             {% if product.features %}
             <div class="features-section">
                 <h5>Характеристики</h5>
@@ -200,7 +198,49 @@
         </div>
     </div>
 
-    
+    <!-- Блок отзывов -->
+    <div class="reviews-section mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold">
+                <i class="fas fa-star text-warning me-2"></i>
+                Отзывы о товаре
+                <span class="badge bg-primary ms-2" id="reviews-count">0</span>
+            </h3>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'reviews:add_review' product.id %}" class="btn btn-primary" id="rew">
+                <i class="fas fa-pen me-2"></i>
+                Написать отзыв
+            </a>
+            {% else %}
+            <a href="{% url 'users:login' %}?next={{ request.path }}" class="btn btn-outline-primary">
+                <i class="fas fa-sign-in-alt me-2"></i>
+                Войдите, чтобы оставить отзыв
+            </a>
+            {% endif %}
+        </div>
+
+        <!-- Контейнер для статистики -->
+        <div class="reviews-stats mb-4" id="reviews-stats"></div>
+
+        <!-- Контейнер для отзывов -->
+        <div id="reviews-container" data-product-id="{{ product.id }}">
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Загрузка...</span>
+                </div>
+                <p class="mt-2 text-muted">Отзывов пока нет</p>
+            </div>
+        </div>
+
+        <!-- Кнопка загрузки еще -->
+        <div class="text-center mt-4" id="load-more-container" style="display: none;">
+            <button class="btn btn-outline-primary" id="load-more-reviews">
+                <i class="fas fa-sync-alt me-2"></i>
+                Показать еще
+            </button>
+        </div>
+    </div>
     {% if related_products %}
     <div class="related-products mt-5">
         <h3 class="mb-4">Похожие товары</h3>
@@ -209,17 +249,17 @@
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                 <div class="card related-product-card h-100">
                     {% if product.main_image %}
-                        <img src="{{ product.main_image.url }}" class="card-img-top" alt="{{ product.name }}">
+                    <img src="{{ product.main_image.url }}" class="card-img-top" alt="{{ product.name }}">
                     {% else %}
-                        <img src="https://via.placeholder.com/300x150" class="card-img-top" alt="{{ product.name }}">
+                    <img src="https://via.placeholder.com/300x150" class="card-img-top" alt="{{ product.name }}">
                     {% endif %}
                     <div class="card-body">
                         <h6 class="card-title">{{ product.name|truncatechars:40 }}</h6>
                         <p class="card-text">
                             <strong>{{ product.price }} ₽</strong>
                         </p>
-                        <a href="{% url 'catalog:product_detail' product.slug %}" 
-                           class="btn btn-outline-primary btn-sm">Подробнее</a>
+                        <a href="{% url 'catalog:product_detail' product.slug %}"
+                            class="btn btn-outline-primary btn-sm">Подробнее</a>
                     </div>
                 </div>
             </div>
@@ -233,19 +273,19 @@
     function validateAddToCart(productId, maxQuantity) {
         const input = document.getElementById(`quantity-${productId}`);
         const quantity = parseInt(input.value);
-        
+
         if (isNaN(quantity) || quantity < 1) {
             alert('Введите корректное количество');
             input.value = 1;
             return false;
         }
-        
+
         if (quantity > maxQuantity) {
             alert(`Максимально доступное количество: ${maxQuantity} шт.`);
             input.value = maxQuantity;
             return false;
         }
-        
+
         return true;
     }
 
