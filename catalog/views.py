@@ -10,7 +10,6 @@ from django.contrib import messages
 class ProductListView(ListView):
     model = Product
     template_name = 'catalog/product_list.html'
-    paginate_by = 12
     context_object_name = 'products'
     
     def get_queryset(self):
