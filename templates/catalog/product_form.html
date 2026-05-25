@@ -12,7 +12,7 @@
                 <div class="card-body">
                     <form method="post" enctype="multipart/form-data" id="productForm">
                         {% csrf_token %}
-                        
+
                         <div class="row">
                             <!-- Основные поля -->
                             <div class="col-md-8">
@@ -27,7 +27,7 @@
                                 {{ form.availability|as_crispy_field }}
                                 {{ form.features|as_crispy_field }}
                             </div>
-                            
+
                             <!-- Блок изображений -->
                             <div class="col-md-4">
                                 <!-- Основное изображение -->
@@ -37,25 +37,20 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="mb-3">
-                                            <input type="file" 
-                                                   name="main_image" 
-                                                   id="main_image_input" 
-                                                   class="form-control" 
-                                                   accept="image/*">
+                                            <input type="file" name="main_image" id="main_image_input"
+                                                class="form-control" accept="image/*">
                                             <small class="text-muted">Рекомендуемый размер: 800×800px</small>
                                         </div>
                                         <div id="main_image_preview" class="text-center">
                                             {% if product and product.main_image %}
-                                                <img src="{{ product.main_image.url }}" 
-                                                     alt="Текущее изображение" 
-                                                     class="img-thumbnail" 
-                                                     style="max-width: 100%;">
-                                                <p class="small mt-2">Текущее изображение</p>
+                                            <img src="{{ product.main_image.url }}" alt="Текущее изображение"
+                                                class="img-thumbnail" style="max-width: 100%;">
+                                            <p class="small mt-2">Текущее изображение</p>
                                             {% endif %}
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Дополнительные изображения -->
                                 <div class="card">
                                     <div class="card-header">
@@ -63,33 +58,28 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="mb-3">
-                                            <input type="file" 
-                                                   name="additional_images" 
-                                                   id="additional_images_input" 
-                                                   class="form-control" 
-                                                   accept="image/*" 
-                                                   multiple>
+                                            <input type="file" name="additional_images" id="additional_images_input"
+                                                class="form-control" accept="image/*" multiple>
                                             <small class="text-muted">Можно выбрать несколько файлов</small>
                                         </div>
                                         <div id="additional_images_preview" class="row g-2">
                                             {% if product %}
-                                                {% for image in product.images.all %}
-                                                    {% if not image.is_main %}
-                                                    <div class="col-6">
-                                                        <img src="{{ image.image.url }}" 
-                                                             alt="Дополнительное изображение" 
-                                                             class="img-thumbnail w-100" 
-                                                             style="height: 100px; object-fit: cover;">
-                                                    </div>
-                                                    {% endif %}
-                                                {% endfor %}
+                                            {% for image in product.images.all %}
+                                            {% if not image.is_main %}
+                                            <div class="col-6">
+                                                <img src="{{ image.image.url }}" alt="Дополнительное изображение"
+                                                    class="img-thumbnail w-100"
+                                                    style="height: 100px; object-fit: cover;">
+                                            </div>
+                                            {% endif %}
+                                            {% endfor %}
                                             {% endif %}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Флаги -->
                         <div class="row mt-3">
                             <div class="col-md-12">
@@ -113,15 +103,21 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Кнопки -->
-                        <div class="d-flex justify-content-between mt-4">
+                        <div class="d-flex justify-content-between align-items-center mt-4">
                             <a href="{% url 'catalog:product_list' %}" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left"></i> Назад к каталогу
                             </a>
+                            <div>
                             <button type="submit" class="btn btn-primary" id="contnentbtn">
                                 <i class="bi bi-check-circle"></i> Сохранить товар
                             </button>
+                            <a href="#" id="exel"class="btn btn-success btn-lg">
+                                Импорт exel
+                            </a>
+                            </div> 
+
                         </div>
                     </form>
                 </div>
@@ -133,70 +129,70 @@
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Предпросмотр основного изображения
-    const mainImageInput = document.getElementById('main_image_input');
-    const mainImagePreview = document.getElementById('main_image_preview');
-    
-    if (mainImageInput) {
-        mainImageInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    mainImagePreview.innerHTML = `
+    document.addEventListener('DOMContentLoaded', function () {
+        // Предпросмотр основного изображения
+        const mainImageInput = document.getElementById('main_image_input');
+        const mainImagePreview = document.getElementById('main_image_preview');
+
+        if (mainImageInput) {
+            mainImageInput.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        mainImagePreview.innerHTML = `
                         <img src="${e.target.result}" 
                              alt="Предпросмотр" 
                              class="img-thumbnail" 
                              style="max-width: 100%;">
                         <p class="small mt-2">Новое изображение</p>
                     `;
+                    }
+                    reader.readAsDataURL(file);
                 }
-                reader.readAsDataURL(file);
-            }
-        });
-    }
-    
-    // Предпросмотр дополнительных изображений
-    const additionalImagesInput = document.getElementById('additional_images_input');
-    const additionalImagesPreview = document.getElementById('additional_images_preview');
-    
-    if (additionalImagesInput) {
-        additionalImagesInput.addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
-            
-            // Очищаем предпросмотр, кроме существующих изображений
-            const existingImages = additionalImagesPreview.querySelectorAll('.existing-image');
-            additionalImagesPreview.innerHTML = '';
-            existingImages.forEach(img => additionalImagesPreview.appendChild(img));
-            
-            // Добавляем новые изображения
-            files.forEach((file, index) => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const col = document.createElement('div');
-                    col.className = 'col-6 mb-2';
-                    col.innerHTML = `
+            });
+        }
+
+        // Предпросмотр дополнительных изображений
+        const additionalImagesInput = document.getElementById('additional_images_input');
+        const additionalImagesPreview = document.getElementById('additional_images_preview');
+
+        if (additionalImagesInput) {
+            additionalImagesInput.addEventListener('change', function (e) {
+                const files = Array.from(e.target.files);
+
+                // Очищаем предпросмотр, кроме существующих изображений
+                const existingImages = additionalImagesPreview.querySelectorAll('.existing-image');
+                additionalImagesPreview.innerHTML = '';
+                existingImages.forEach(img => additionalImagesPreview.appendChild(img));
+
+                // Добавляем новые изображения
+                files.forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const col = document.createElement('div');
+                        col.className = 'col-6 mb-2';
+                        col.innerHTML = `
                         <img src="${e.target.result}" 
                              alt="Предпросмотр ${index + 1}" 
                              class="img-thumbnail w-100" 
                              style="height: 100px; object-fit: cover;">
                         <small class="d-block text-center">${file.name}</small>
                     `;
-                    additionalImagesPreview.appendChild(col);
-                }
-                reader.readAsDataURL(file);
+                        additionalImagesPreview.appendChild(col);
+                    }
+                    reader.readAsDataURL(file);
+                });
             });
-        });
-    }
-    
-    // Помечаем существующие изображения для сохранения при обновлении
-    {% if product %}
+        }
+
+        // Помечаем существующие изображения для сохранения при обновлении
+        {% if product %}
         const existingImages = document.querySelectorAll('#additional_images_preview .col-6');
         existingImages.forEach(col => {
             col.classList.add('existing-image');
         });
-    {% endif %}
-});
+        {% endif %}
+    });
 </script>
 {% endblock %}

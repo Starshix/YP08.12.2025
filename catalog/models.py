@@ -250,6 +250,7 @@ class Product(models.Model):
         if image:
             return image.image
         return None
+
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, 
                               related_name='images')

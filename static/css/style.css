@@ -2190,9 +2190,7 @@
 
 
 .catalog-sidebar {
-    position: sticky;
-    top: 20px;
-    height: fit-content;
+    top: 120px;
 }
 
 .filter-section {
@@ -3545,14 +3543,22 @@ h6.fw-bold {
 
 .table td {
     vertical-align: middle;
-    padding: 1rem 0.75rem;
+    width: 50px;
 }
 
 .table .btn-group-sm {
     white-space: nowrap;
 }
 
-
+.col-lg-4{
+    width: 25% !important;
+}
+.col-lg-8{
+    width: 75% !important;
+}
+#exel{
+    margin-top: 10px;
+}
 .card .list-group-flush .list-group-item {
     border-left: 3px solid transparent;
     margin: 2px 0;
@@ -6371,7 +6377,6 @@ input:checked + .switch-slider:before {
 
 /* ===== ОБНОВЛЕННЫЕ ФИЛЬТРЫ ===== */
 .catalog-sidebar {
-    position: sticky;
     top: 20px;
     height: fit-content;
 }
