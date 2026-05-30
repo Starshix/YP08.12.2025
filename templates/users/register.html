@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
@@ -19,35 +18,150 @@
                     </div>
                 </div>
                 <div class="card-body p-4 p-md-5">
-                    <form method="post" class="needs-validation" novalidate>
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
+                    
+                    <form method="post" id="registrationForm" novalidate>
                         {% csrf_token %}
                         
                         <div class="row g-3">
                             <div class="row">
-                                    <div class="col-md-6">
-                                        {{ form.email|as_crispy_field }}
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="{{ form.email.id_for_label }}" class="form-label fw-bold">
+                                            <i class="fas fa-envelope me-1 text-about"></i>Email <span class="text-danger">*</span>
+                                        </label>
+                                        {{ form.email }}
+                                        {% if form.email.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {% for error in form.email.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                        <div class="form-text">Введите действующий email адрес</div>
                                     </div>
-                                    <div class="col-md-6">
-                                        {{ form.username|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="{{ form.username.id_for_label }}" class="form-label fw-bold">
+                                            <i class="fas fa-user me-1 text-about"></i>Имя пользователя <span class="text-danger">*</span>
+                                        </label>
+                                        {{ form.username }}
+                                        {% if form.username.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {% for error in form.username.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                        <div class="form-text">Латинские буквы</div>
                                     </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    {{ form.first_name|as_crispy_field }}
+                                    <div class="mb-3">
+                                        <label for="{{ form.first_name.id_for_label }}" class="form-label fw-bold">
+                                            <i class="fas fa-user-circle me-1 text-about"></i>Имя <span class="text-danger">*</span>
+                                        </label>
+                                        {{ form.first_name }}
+                                        {% if form.first_name.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {% for error in form.first_name.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
                                 </div>
                                 <div class="col-md-6">
-                                    {{ form.last_name|as_crispy_field }}
+                                    <div class="mb-3">
+                                        <label for="{{ form.last_name.id_for_label }}" class="form-label fw-bold">
+                                            <i class="fas fa-user-circle me-1 text-about"></i>Фамилия
+                                        </label>
+                                        {{ form.last_name }}
+                                        {% if form.last_name.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {% for error in form.last_name.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
                             <div class="mb-3">
-                                {{ form.phone|as_crispy_field }}
+                                <div class="mb-3">
+                                    <label for="{{ form.phone.id_for_label }}" class="form-label fw-bold">
+                                        <i class="fas fa-phone me-1 text-about"></i>Телефон
+                                    </label>
+                                    {{ form.phone }}
+                                    {% if form.phone.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.phone.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <div class="form-text">Формат: 8 () &#x2217&#x2217&#x2217 - &#x2217&#x2217 - &#x2217&#x2217</div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    {{ form.password1|as_crispy_field }}
+                                    <div class="mb-3">
+                                        <label for="{{ form.password1.id_for_label }}" class="form-label fw-bold">
+                                            <i class="fas fa-lock me-1 text-about"></i>Пароль <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="input-group">
+                                            {{ form.password1 }}
+                                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="password1">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                        {% if form.password1.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {% for error in form.password1.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                        <div class="form-text">
+                                            <ul class="mb-0 ps-3 small">
+                                                <li>Пароль не должен быть слишком похож на другую вашу личную информацию.</li>
+                                                <li>Ваш пароль должен содержать как минимум 8 символов.</li>
+                                                <li>Пароль не должен быть слишком простым и распространенным.</li>
+                                                <li>Пароль не может состоять только из цифр.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-md-6">
-                                    {{ form.password2|as_crispy_field }}
+                                    <div class="mb-3">
+                                        <label for="{{ form.password2.id_for_label }}" class="form-label fw-bold">
+                                            <i class="fas fa-lock me-1 text-about"></i>Подтверждение пароля <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="input-group">
+                                            {{ form.password2 }}
+                                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="password2">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                        {% if form.password2.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {% for error in form.password2.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                        <div class="form-text">Для подтверждения введите, пожалуйста, пароль ещё раз.</div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-12">
@@ -59,7 +173,7 @@
                                                 Я согласен с <a href="#" class="text-decoration-none text-about">правилами сайта</a> 
                                                 и <a href="#" class="text-decoration-none text-about">политикой конфиденциальности</a>
                                             </label>
-                                            <div class="invalid-feedback">
+                                            <div class="invalid-feedback" id="terms-feedback">
                                                 Необходимо принять условия использования.
                                             </div>
                                         </div>
@@ -74,14 +188,12 @@
                                 </div>
                             </div>
                             
-                            
                             <div class="col-12">
-                                <button type="submit" class="btn btn-primary btn-lg w-100 py-3">
+                                <button type="submit" class="btn btn-primary btn-lg w-100 py-3" id="submitBtn">
                                     <i class="fas fa-user-plus me-2"></i>
                                     Создать аккаунт
                                 </button>
                             </div>
-                            
                             
                             <div class="col-12 text-center mt-4">
                                 <p class="mb-0 text-muted">
@@ -93,7 +205,6 @@
                             </div>
                         </div>
                     </form>
-                    
                     
                     <div class="mt-4 pt-4 border-top">
                         <div class="text-center mb-3">
@@ -113,42 +224,442 @@
 </div>
 
 <script>
-// Валидация формы
-(function () {
-    'use strict'
-    const forms = document.querySelectorAll('.needs-validation')
-    Array.from(forms).forEach(form => {
-        form.addEventListener('submit', event => {
-            if (!form.checkValidity()) {
-                event.preventDefault()
-                event.stopPropagation()
+function formatPhoneNumber(input) {
+    let value = input.value.replace(/\D/g, '');
+    
+    if (value.length === 0) {
+        input.value = '';
+        return;
+    }
+    
+    // Начинаем с 8
+    if (!value.startsWith('8')) {
+        if (value.startsWith('7')) {
+            value = '8' + value.substring(1);
+        } else if (value.length > 0) {
+            value = '8' + value;
+        }
+    }
+    
+    let formatted = '';
+    
+    if (value.length > 0) {
+        formatted += value[0];
+    }
+    if (value.length > 1) {
+        formatted += ' (' + value.substring(1, Math.min(4, value.length));
+    }
+    if (value.length > 4) {
+        formatted += ') ' + value.substring(4, Math.min(7, value.length));
+    }
+    if (value.length > 7) {
+        formatted += '-' + value.substring(7, Math.min(9, value.length));
+    }
+    if (value.length > 9) {
+        formatted += '-' + value.substring(9, Math.min(11, value.length));
+    }
+    
+    input.value = formatted;
+}
+
+function validatePhone(phone) {
+    if (!phone) return true;
+    
+    const phonePattern = /^8\s*\(\d{3}\)\s*\d{3}-\d{2}-\d{2}$/;
+    return phonePattern.test(phone);
+}
+
+function validateName(name, fieldName) {
+    if (!name) return fieldName === 'last_name';
+    const namePattern = /^[а-яА-ЯёЁa-zA-Z\s-]+$/;
+    return namePattern.test(name) && name.trim().length >= 2;
+}
+
+function validateEmail(email) {
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
+}
+
+function validateUsername(username) {
+    const usernamePattern = /^[\w.@+-]+$/;
+    return usernamePattern.test(username) && username.length >= 3 && username.length <= 150;
+}
+
+function validatePassword(password) {
+    return password.length >= 8;
+}
+
+function validatePasswordMatch(password1, password2) {
+    return password1 === password2;
+}
+
+function showError(fieldId, message) {
+    const field = document.getElementById(fieldId);
+    if (!field) return;
+    
+    field.classList.add('is-invalid');
+    
+    let errorDiv = field.parentElement.querySelector('.invalid-feedback');
+    if (!errorDiv && field.parentElement.classList.contains('input-group')) {
+        errorDiv = field.parentElement.parentElement.querySelector('.invalid-feedback');
+    }
+    
+    if (errorDiv) {
+        errorDiv.textContent = message;
+        errorDiv.classList.add('d-block');
+    } else {
+        const newErrorDiv = document.createElement('div');
+        newErrorDiv.className = 'invalid-feedback d-block';
+        newErrorDiv.textContent = message;
+        
+        if (field.parentElement.classList.contains('input-group')) {
+            field.parentElement.parentElement.appendChild(newErrorDiv);
+        } else {
+            field.parentElement.appendChild(newErrorDiv);
+        }
+    }
+}
+
+// Функция для очистки ошибок
+function clearError(fieldId) {
+    const field = document.getElementById(fieldId);
+    if (!field) return;
+    
+    field.classList.remove('is-invalid');
+    
+    let errorDiv = field.parentElement.querySelector('.invalid-feedback');
+    if (!errorDiv && field.parentElement.classList.contains('input-group')) {
+        errorDiv = field.parentElement.parentElement.querySelector('.invalid-feedback');
+    }
+    
+    if (errorDiv) {
+        errorDiv.classList.remove('d-block');
+        errorDiv.textContent = '';
+    }
+}
+
+// Функция для показа ошибки чекбокса
+function showTermsError(show) {
+    const termsCheckbox = document.getElementById('terms');
+    const termsFeedback = document.getElementById('terms-feedback');
+    
+    if (show) {
+        termsCheckbox.classList.add('is-invalid');
+        termsFeedback.classList.add('d-block');
+    } else {
+        termsCheckbox.classList.remove('is-invalid');
+        termsFeedback.classList.remove('d-block');
+    }
+}
+
+// Валидация поля email
+function validateEmailField() {
+    const emailField = document.getElementById('{{ form.email.id_for_label }}');
+    if (!emailField) return true;
+    
+    const email = emailField.value.trim();
+    
+    if (!email) {
+        showError('{{ form.email.id_for_label }}', 'Email обязателен для заполнения.');
+        return false;
+    }
+    
+    if (!validateEmail(email)) {
+        showError('{{ form.email.id_for_label }}', 'Введите корректный email адрес.');
+        return false;
+    }
+    
+    clearError('{{ form.email.id_for_label }}');
+    return true;
+}
+
+// Валидация поля username
+function validateUsernameField() {
+    const usernameField = document.getElementById('{{ form.username.id_for_label }}');
+    if (!usernameField) return true;
+    
+    const username = usernameField.value.trim();
+    
+    if (!username) {
+        showError('{{ form.username.id_for_label }}', 'Имя пользователя обязательно для заполнения.');
+        return false;
+    }
+    
+    if (!validateUsername(username)) {
+        showError('{{ form.username.id_for_label }}', 'Имя пользователя должно содержать от 3 до 150 символов. Только буквы, цифры и @/./+/-/_.');
+        return false;
+    }
+    
+    clearError('{{ form.username.id_for_label }}');
+    return true;
+}
+
+// Валидация поля first_name
+function validateFirstNameField() {
+    const firstNameField = document.getElementById('{{ form.first_name.id_for_label }}');
+    if (!firstNameField) return true;
+    
+    const firstName = firstNameField.value.trim();
+    
+    if (!firstName) {
+        showError('{{ form.first_name.id_for_label }}', 'Имя обязательно для заполнения.');
+        return false;
+    }
+    
+    if (!validateName(firstName, 'first_name')) {
+        showError('{{ form.first_name.id_for_label }}', 'Имя должно содержать минимум 2 символа. Только буквы, пробелы и дефисы.');
+        return false;
+    }
+    
+    clearError('{{ form.first_name.id_for_label }}');
+    return true;
+}
+
+// Валидация поля last_name
+function validateLastNameField() {
+    const lastNameField = document.getElementById('{{ form.last_name.id_for_label }}');
+    if (!lastNameField) return true;
+    
+    const lastName = lastNameField.value.trim();
+    
+    if (lastName && !validateName(lastName, 'last_name')) {
+        showError('{{ form.last_name.id_for_label }}', 'Фамилия должна содержать минимум 2 символа. Только буквы, пробелы и дефисы.');
+        return false;
+    }
+    
+    clearError('{{ form.last_name.id_for_label }}');
+    return true;
+}
+
+// Валидация поля phone
+function validatePhoneField() {
+    const phoneField = document.getElementById('{{ form.phone.id_for_label }}');
+    if (!phoneField) return true;
+    
+    const phone = phoneField.value.trim();
+    
+    if (phone && !validatePhone(phone)) {
+        showError('{{ form.phone.id_for_label }}', 'Неверный формат телефона. Используйте формат: 8 (960) 373-01-79');
+        return false;
+    }
+    
+    clearError('{{ form.phone.id_for_label }}');
+    return true;
+}
+
+// Валидация поля password1
+function validatePassword1Field() {
+    const passwordField = document.getElementById('{{ form.password1.id_for_label }}');
+    if (!passwordField) return true;
+    
+    const password = passwordField.value;
+    
+    if (!password) {
+        showError('{{ form.password1.id_for_label }}', 'Пароль обязателен для заполнения.');
+        return false;
+    }
+    
+    if (!validatePassword(password)) {
+        showError('{{ form.password1.id_for_label }}', 'Пароль должен содержать минимум 8 символов.');
+        return false;
+    }
+    
+    clearError('{{ form.password1.id_for_label }}');
+    return true;
+}
+
+// Валидация поля password2
+function validatePassword2Field() {
+    const password1Field = document.getElementById('{{ form.password1.id_for_label }}');
+    const password2Field = document.getElementById('{{ form.password2.id_for_label }}');
+    
+    if (!password1Field || !password2Field) return true;
+    
+    const password1 = password1Field.value;
+    const password2 = password2Field.value;
+    
+    if (!password2) {
+        showError('{{ form.password2.id_for_label }}', 'Подтверждение пароля обязательно.');
+        return false;
+    }
+    
+    if (!validatePasswordMatch(password1, password2)) {
+        showError('{{ form.password2.id_for_label }}', 'Пароли не совпадают.');
+        return false;
+    }
+    
+    clearError('{{ form.password2.id_for_label }}');
+    return true;
+}
+
+// Валидация чекбокса
+function validateTerms() {
+    const termsCheckbox = document.getElementById('terms');
+    if (!termsCheckbox) return true;
+    
+    const isChecked = termsCheckbox.checked;
+    
+    if (!isChecked) {
+        showTermsError(true);
+        return false;
+    }
+    
+    showTermsError(false);
+    return true;
+}
+
+function validateForm() {
+    const isEmailValid = validateEmailField();
+    const isUsernameValid = validateUsernameField();
+    const isFirstNameValid = validateFirstNameField();
+    const isLastNameValid = validateLastNameField();
+    const isPhoneValid = validatePhoneField();
+    const isPassword1Valid = validatePassword1Field();
+    const isPassword2Valid = validatePassword2Field();
+    const isTermsValid = validateTerms();
+    
+    return isEmailValid && isUsernameValid && isFirstNameValid && 
+           isLastNameValid && isPhoneValid && isPassword1Valid && 
+           isPassword2Valid && isTermsValid;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const emailField = document.getElementById('{{ form.email.id_for_label }}');
+    const usernameField = document.getElementById('{{ form.username.id_for_label }}');
+    const firstNameField = document.getElementById('{{ form.first_name.id_for_label }}');
+    const lastNameField = document.getElementById('{{ form.last_name.id_for_label }}');
+    const phoneField = document.getElementById('{{ form.phone.id_for_label }}');
+    const password1Field = document.getElementById('{{ form.password1.id_for_label }}');
+    const password2Field = document.getElementById('{{ form.password2.id_for_label }}');
+    const termsCheckbox = document.getElementById('terms');
+    
+    if (phoneField) {
+        phoneField.addEventListener('input', function() {
+            formatPhoneNumber(this);
+            validatePhoneField();
+        });
+    }
+    
+    if (emailField) emailField.addEventListener('blur', validateEmailField);
+    if (emailField) emailField.addEventListener('input', validateEmailField);
+    
+    if (usernameField) usernameField.addEventListener('blur', validateUsernameField);
+    if (usernameField) usernameField.addEventListener('input', validateUsernameField);
+    
+    if (firstNameField) firstNameField.addEventListener('blur', validateFirstNameField);
+    if (firstNameField) firstNameField.addEventListener('input', validateFirstNameField);
+    
+    if (lastNameField) lastNameField.addEventListener('blur', validateLastNameField);
+    if (lastNameField) lastNameField.addEventListener('input', validateLastNameField);
+    
+    if (phoneField) phoneField.addEventListener('blur', validatePhoneField);
+    
+    if (password1Field) password1Field.addEventListener('blur', validatePassword1Field);
+    if (password1Field) password1Field.addEventListener('input', validatePassword1Field);
+    
+    if (password2Field) password2Field.addEventListener('blur', validatePassword2Field);
+    if (password2Field) password2Field.addEventListener('input', validatePassword2Field);
+    
+    if (termsCheckbox) termsCheckbox.addEventListener('change', validateTerms);
+    
+    // Обработка отправки формы
+    const form = document.getElementById('registrationForm');
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            if (!validateForm()) {
+                event.preventDefault();
+                event.stopPropagation();
             }
-            form.classList.add('was-validated')
-        }, false)
-    })
-})()
-
-// Переключение видимости пароля
-document.getElementById('togglePassword1').addEventListener('click', function() {
-    const passwordInput = this.parentElement.querySelector('input')
-    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password'
-    passwordInput.setAttribute('type', type)
-    this.querySelector('i').classList.toggle('fa-eye')
-    this.querySelector('i').classList.toggle('fa-eye-slash')
-})
-
-document.getElementById('togglePassword2').addEventListener('click', function() {
-    const passwordInput = this.parentElement.querySelector('input')
-    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password'
-    passwordInput.setAttribute('type', type)
-    this.querySelector('i').classList.toggle('fa-eye')
-    this.querySelector('i').classList.toggle('fa-eye-slash')
-})
+        });
+    }
+    
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const passwordInput = document.getElementById('id_' + targetId);
+            
+            if (passwordInput) {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.querySelector('i').classList.toggle('fa-eye');
+                this.querySelector('i').classList.toggle('fa-eye-slash');
+            }
+        });
+    });
+});
 </script>
+
+<style>
+.is-invalid {
+    border-color: #dc3545 !important;
+}
+
+.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+.invalid-feedback {
+    display: none;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 0.875em;
+    color: #dc3545;
+}
+
+.invalid-feedback.d-block {
+    display: block;
+}
+
+.form-check-input.is-invalid {
+    border-color: #dc3545;
+}
+
+.form-check-input.is-invalid:checked {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.form-check-input.is-invalid ~ .form-check-label {
+    color: #dc3545;
+}
+
+/* Анимация для кнопки */
+.btn-primary {
+    transition: all 0.3s ease;
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+/* Стили для полей ввода */
+.form-control {
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #a50315;
+    box-shadow: 0 0 0 0.2rem rgba(165, 3, 21, 0.25);
+}
+
+/* Стили для группы input с кнопкой */
+.input-group .form-control {
+    border-right: none;
+}
+
+.input-group .btn-outline-secondary {
+    border-left: none;
+}
+
+.input-group .btn-outline-secondary:hover {
+    background-color: #a50315;
+    border-color: #a50315;
+    color: white;
+}
+
+.text-danger {
+    font-size: 0.875rem;
+}
+</style>
 {% endblock %}
-
-
-                    
-
-
-                    

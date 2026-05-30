@@ -3393,12 +3393,14 @@ h6.fw-bold {
 .input-group .btn-outline-secondary {
     border-color: var(--border-color);
     color: var(--text-gray);
+    max-width: 80px;
 }
 
 .input-group .btn-outline-secondary:hover {
     background: var(--primary);
     border-color: var(--primary);
     color: white;
+    max-width: 80px;
 }
 
 
@@ -3558,6 +3560,7 @@ h6.fw-bold {
 }
 #exel{
     margin-top: 10px;
+    
 }
 .card .list-group-flush .list-group-item {
     border-left: 3px solid transparent;
